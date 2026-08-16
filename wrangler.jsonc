@@ -1,0 +1,25 @@
+{
+  // Committed on purpose. Without this file the build container auto-detects
+  // Next.js and runs the OpenNext adapter migration on every deploy, generating
+  // throwaway config each time — that is what produced the
+  // WORKER_SELF_REFERENCE mismatch (it pointed at the package.json name,
+  // `block-block-pixel`, not at the Worker below).
+  //
+  // The page is fully prerendered (`output: 'export'` in next.config.ts), so it
+  // deploys as static assets: no server runtime, no service bindings.
+
+  // Must match the existing Worker so deploys land on the same project.
+  "name": "blockthon2026-randingpage",
+  "compatibility_date": "2026-08-16",
+
+  "assets": {
+    // Written by `next build` with output: 'export'.
+    "directory": "./out",
+    // Next emits 404.html; serve it for unknown paths.
+    "not_found_handling": "404-page"
+  },
+
+  "observability": {
+    "enabled": true
+  }
+}
