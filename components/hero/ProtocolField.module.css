@@ -19,10 +19,15 @@
   initial-value: 0;
 }
 
+/*
+ * Deliberately no `z-index` here. A stacking context on this element would trap
+ * every cube below the hero copy, and the front plane has to be able to paint
+ * above it. Its children carry their own z-indices instead, and `.hero` isolates
+ * the whole lot from the rest of the page.
+ */
 .field {
   position: absolute;
   inset: 0;
-  z-index: 0;
   overflow: hidden;
   /* Never intercepts a click, a scroll or a CTA. */
   pointer-events: none;
@@ -31,6 +36,27 @@
 .cubes {
   position: absolute;
   inset: 0;
+  z-index: 0;
+}
+
+/*
+ * The near cubes, in front of the copy. Same cube styles, different plane.
+ *
+ * Masked to the upper half: the point of this plane is that blocks cross the
+ * wordmark, not that they litter the headline and the CTA. It releases before
+ * the buttons, so nothing ever sits over the thing you are meant to click
+ * (CLAUDE.md §9). Below the fade the cube simply falls back to the rear plane's
+ * reading — it is still there, just no longer in front.
+ */
+.cubesFront {
+  position: absolute;
+  inset: 0;
+  /* Past .shell (2) so the type reads as sitting inside the field. */
+  z-index: 3;
+  pointer-events: none;
+  --plane-gain: 2.1;
+  -webkit-mask-image: linear-gradient(to bottom, #000 40%, transparent 58%);
+  mask-image: linear-gradient(to bottom, #000 40%, transparent 58%);
 }
 
 .cube {
@@ -88,9 +114,14 @@
     background-color 200ms linear;
 }
 
-/* Blocks the current word does not need drift out into the surrounding field. */
+/*
+ * Blocks the current word does not need drift out into the surrounding field.
+ * `--plane-gain` is set by the plane the cube lives in: rear cubes stay at the
+ * ambient reading, the front plane lifts so a near block actually looks near
+ * rather than like a smudge sitting on the type.
+ */
 .cube[data-on='false'] {
-  opacity: calc(0.08 + var(--depth, 0) * 0.3);
+  opacity: calc((0.08 + var(--depth, 0) * 0.3) * var(--plane-gain, 1));
   transition:
     transform 900ms var(--ease-out) var(--delay, 0ms),
     opacity 640ms linear var(--delay, 0ms),
@@ -112,10 +143,10 @@
 @keyframes drift {
   0%,
   100% {
-    opacity: calc((0.08 + var(--depth, 0) * 0.3) * 0.55);
+    opacity: calc((0.08 + var(--depth, 0) * 0.3) * 0.55 * var(--plane-gain, 1));
   }
   50% {
-    opacity: calc(0.08 + var(--depth, 0) * 0.3);
+    opacity: calc((0.08 + var(--depth, 0) * 0.3) * var(--plane-gain, 1));
   }
 }
 

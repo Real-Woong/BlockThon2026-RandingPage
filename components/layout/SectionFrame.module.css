@@ -1,5 +1,40 @@
 .section {
   position: relative;
+  background: var(--canvas);
+}
+
+/* --- Ground (DESIGN_SYSTEM.md §3) ---------------------------------------
+ * Three surface steps exist in the palette; a page that only ever paints the
+ * darkest one has no vertical rhythm of light. Steps are deliberately close
+ * together — the point is that the eye registers a change of ground, not that
+ * it can name the colour.
+ */
+.section[data-tone='surface'] {
+  background: var(--surface);
+}
+
+.section[data-tone='field'] {
+  background: var(--surface);
+}
+
+/* The protocol grid, made literal. Only on `field` sections, and faded out at
+   the edges so it never reads as a table. */
+.section[data-tone='field']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(to right, var(--grid) 0 1px, transparent 1px 56px),
+    repeating-linear-gradient(to bottom, var(--grid) 0 1px, transparent 1px 56px);
+  -webkit-mask-image: radial-gradient(120% 90% at 50% 40%, #000 20%, transparent 78%);
+  mask-image: radial-gradient(120% 90% at 50% 40%, #000 20%, transparent 78%);
+  opacity: 0;
+  transition: opacity var(--t-draw) var(--ease-out);
+}
+
+.section[data-tone='field'][data-inview='true']::after {
+  opacity: 1;
 }
 
 /* Rhythm changes per section: dense field → quiet statement → diagram → … */
@@ -25,6 +60,9 @@
 }
 
 .shell {
+  position: relative;
+  /* Above the `field` grid, which paints as a section ::after. */
+  z-index: 1;
   width: var(--shell-width);
   margin-inline: auto;
 }
@@ -32,6 +70,7 @@
 /* The section number sits in the margin, aligned to the first baseline. */
 .index {
   position: absolute;
+  z-index: 1;
   top: calc(var(--pad-compact) * 0.5);
   left: var(--gutter);
   font-family: var(--font-mono);
@@ -102,7 +141,7 @@
 }
 :global(html[data-motion='on']) .section[data-reveal='line'][data-inview='true'] .shell {
   opacity: 1;
-  transition-delay: 160ms;
+  transition-delay: 90ms;
 }
 
 /* index activation — content arrives from the index side */

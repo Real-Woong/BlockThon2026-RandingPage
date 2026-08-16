@@ -19,7 +19,13 @@ export function FAQSection() {
   if (entries.length === 0) return null;
 
   return (
-    <SectionFrame id={sectionId('faq')} index={sectionIndex('faq')} density="compact" reveal="index">
+    <SectionFrame
+      id={sectionId('faq')}
+      index={sectionIndex('faq')}
+      density="compact"
+      reveal="index"
+      tone="surface"
+    >
       <div className={styles.faq}>
         <h2 className={styles.faqTitle}>faq</h2>
         <div className={styles.faqBody}>

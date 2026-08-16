@@ -21,6 +21,16 @@
     'Segoe UI', sans-serif;
   --font-mono: 'SFMono-Regular', ui-monospace, 'JetBrains Mono', 'Menlo', 'Consolas', monospace;
 
+  /* Weight (DESIGN_SYSTEM.md §4).
+     Size alone was carrying the whole hierarchy, which is what makes a page
+     read as untouched. These four steps are meant to be used far apart —
+     `display` next to `quiet`, never `body` next to `strong`.
+     `quiet` is for large muted text only; Korean at 16px stays at `body`. */
+  --w-quiet: 300;
+  --w-body: 400;
+  --w-strong: 600;
+  --w-display: 700;
+
   --display-xl: clamp(4rem, 11vw, 10rem);
   --display-l: clamp(3rem, 7vw, 7rem);
   --heading: clamp(2rem, 4vw, 4rem);
@@ -33,7 +43,9 @@
   /* --- Grid and spacing (DESIGN_SYSTEM.md §5) --- */
   --max-width: 1440px;
   --gutter: 20px;
-  /* Room kept clear on the right for the section index rail. */
+  /* Room kept clear on the right for the section index rail. The rail itself is
+     ~62px wide from the viewport edge; this has to exceed that by enough to
+     read as a margin, or right-aligned content lands against the numbers. */
   --rail-space: 0px;
   --shell-width: min(100% - (var(--gutter) * 2) - var(--rail-space), var(--max-width));
 
@@ -50,9 +62,15 @@
   /* --- Motion (INTERACTIONS.md §7) --- */
   --t-micro: 150ms;
   --t-reveal: 380ms;
-  --t-section: 720ms;
+  /* Section enter. Kept under ~500ms on purpose: the observer fires before a
+     section reaches the fold, so the reveal must finish while it is still
+     arriving — a longer curve leaves readable content sitting at opacity 0. */
+  --t-section: 480ms;
+  --t-draw: 900ms;
   --ease-out: cubic-bezier(0.16, 0.84, 0.44, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  /* Stagger step for lists that enter as a sequence rather than a block. */
+  --stagger: 70ms;
 
   --header-height: 64px;
 }
@@ -66,7 +84,7 @@
 
 @media (min-width: 1120px) {
   :root {
-    --rail-space: 64px;
+    --rail-space: 104px;
     --gutter: 32px;
     --header-height: 80px;
   }

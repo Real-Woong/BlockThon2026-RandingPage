@@ -64,6 +64,30 @@
   margin-left: 0;
 }
 
+/* Sits on the header's own bottom rule, so it costs no extra height. */
+.progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity var(--t-reveal) var(--ease-out);
+}
+
+.header[data-lifted='true'] .progress {
+  opacity: 1;
+}
+
+.progressFill {
+  display: block;
+  height: 100%;
+  background: var(--electric-blue);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
 .preview {
   margin: 0;
   padding: 6px var(--gutter);

@@ -11,7 +11,7 @@ import styles from './ProtocolField.module.css';
 const LINE_POOL = 12;
 
 type ProtocolFieldProps = {
-  /** The box the cubes are laid out in. */
+  /** The band the word is set in — kept clear of the copy. */
   stageRef: RefObject<HTMLElement | null>;
   /** Which word to spell. The hero owns the clock; the field just follows. */
   activeWord: number;
@@ -26,17 +26,33 @@ type ProtocolFieldProps = {
  *
  * The layer is decorative: aria-hidden, `pointer-events: none`, and every word
  * is also set as real text in the caption beside it.
+ *
+ * The pool is split across two planes. Most cubes sit behind the copy; a handful
+ * of the nearest ones paint in front of it, so the wordmark is inside the field
+ * rather than stacked below a banner of it. Nothing in the front plane is ever
+ * part of a letterform, and it never takes pointer events.
  */
 export function ProtocolField({ stageRef, activeWord }: ProtocolFieldProps) {
   const field = useMemo(() => buildWordField(), []);
+  const fieldRef = useRef<HTMLDivElement>(null);
   const cubeRefs = useRef<(HTMLDivElement | null)[]>([]);
   const lineRefs = useRef<(SVGLineElement | null)[]>([]);
   const engineRef = useRef<ReturnType<typeof createFieldEngine> | null>(null);
   const { ready, reducedMotion, coarsePointer, compact } = useEnvironment();
 
+  const planes = useMemo(() => {
+    const back: number[] = [];
+    const front: number[] = [];
+    for (let index = 0; index < field.poolSize; index += 1) {
+      (field.foreground.has(index) ? front : back).push(index);
+    }
+    return { back, front };
+  }, [field]);
+
   useEffect(() => {
     const stage = stageRef.current;
-    if (!ready || !stage) return;
+    const fieldEl = fieldRef.current;
+    if (!ready || !stage || !fieldEl) return;
 
     const cubes = cubeRefs.current.filter((node): node is HTMLDivElement => node !== null);
     const lines = lineRefs.current.filter((node): node is SVGLineElement => node !== null);
@@ -44,6 +60,7 @@ export function ProtocolField({ stageRef, activeWord }: ProtocolFieldProps) {
 
     const engine = createFieldEngine({
       stage,
+      fieldEl,
       cubes,
       lines,
       field,
@@ -63,8 +80,27 @@ export function ProtocolField({ stageRef, activeWord }: ProtocolFieldProps) {
     engineRef.current?.setWord(activeWord);
   }, [activeWord]);
 
+  /* Rendered per plane, but the ref always lands on the cube's pool index —
+     the engine addresses cubes by index and knows nothing about the planes. */
+  const renderPlane = (indices: number[]) =>
+    indices.map((index) => (
+      <div
+        key={index}
+        ref={(node) => {
+          cubeRefs.current[index] = node;
+        }}
+        className={styles.cube}
+        data-kind="block"
+        data-on="false"
+        data-facet="base"
+      >
+        <span className={styles.fx} />
+      </div>
+    ));
+
   return (
     <div
+      ref={fieldRef}
       className={styles.field}
       data-static={reducedMotion ? 'true' : undefined}
       data-ready={ready ? 'true' : undefined}
@@ -72,22 +108,7 @@ export function ProtocolField({ stageRef, activeWord }: ProtocolFieldProps) {
     >
       <SceneFallback />
 
-      <div className={styles.cubes}>
-        {Array.from({ length: field.poolSize }, (_, index) => (
-          <div
-            key={index}
-            ref={(node) => {
-              cubeRefs.current[index] = node;
-            }}
-            className={styles.cube}
-            data-kind="block"
-            data-on="false"
-            data-facet="base"
-          >
-            <span className={styles.fx} />
-          </div>
-        ))}
-      </div>
+      <div className={styles.cubes}>{renderPlane(planes.back)}</div>
 
       <svg className={styles.lines} width="100%" height="100%" focusable="false">
         {Array.from({ length: LINE_POOL }, (_, index) => (
@@ -106,6 +127,9 @@ export function ProtocolField({ stageRef, activeWord }: ProtocolFieldProps) {
       </svg>
 
       <SplineScene />
+
+      {/* Above the copy. Last in the DOM and z-indexed past the hero shell. */}
+      <div className={styles.cubesFront}>{renderPlane(planes.front)}</div>
     </div>
   );
 }

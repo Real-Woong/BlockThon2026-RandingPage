@@ -47,7 +47,7 @@ h1,
 h2,
 h3,
 h4 {
-  font-weight: 500;
+  font-weight: var(--w-strong);
   line-height: 1.05;
   letter-spacing: -0.02em;
 }
@@ -92,7 +92,13 @@ button {
 .u-display {
   font-family: var(--font-display);
   letter-spacing: -0.035em;
-  font-weight: 500;
+  font-weight: var(--w-display);
+}
+
+/* Large muted text. Never applied below body-l: Korean at 16px loses too much
+   stroke at 300 to stay comfortably readable. */
+.u-quiet {
+  font-weight: var(--w-quiet);
 }
 
 .u-mono {

@@ -17,6 +17,10 @@ const HOLD_MS = 5200;
  * next one on its own clock — scrolling is not hijacked to drive it, so the
  * page below scrolls normally. The rail lets you pick a word directly, and
  * reduced motion stops the cycle entirely.
+ *
+ * The field covers the whole section and the copy sits inside it: the stage is
+ * now an empty spacer that only reserves the band the word is set in, so the
+ * wordmark can rise into the field instead of being stacked beneath a banner.
  */
 export function Hero() {
   const stageRef = useRef<HTMLDivElement>(null);
@@ -43,10 +47,11 @@ export function Hero() {
 
   return (
     <section id="top" className={styles.hero}>
-      <div ref={stageRef} className={styles.stage}>
-        <ProtocolField stageRef={stageRef} activeWord={activeWord} />
-        <div className={styles.readability} aria-hidden="true" />
-      </div>
+      {/* Full-bleed: the field is the ground the whole hero stands on, not a
+          banner above the copy. `stageRef` marks the band the word is set in. */}
+      <ProtocolField stageRef={stageRef} activeWord={activeWord} />
+      <div ref={stageRef} className={styles.stage} aria-hidden="true" />
+      <div className={styles.readability} aria-hidden="true" />
 
       <div className={styles.shell}>
         <HeroContent />

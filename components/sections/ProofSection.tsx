@@ -1,6 +1,7 @@
 import { content, items, line, lines, value } from '@/content';
 import { sectionId, sectionIndex, sectionVisibility } from '@/content/sections';
 import { SectionFrame } from '@/components/layout/SectionFrame';
+import { CountUp } from '@/components/ui/CountUp';
 import styles from './sections.module.css';
 
 /**
@@ -20,7 +21,13 @@ export function ProofSection() {
   const gallery = items(proof?.gallery).filter((image) => line(image.src));
 
   return (
-    <SectionFrame id={sectionId('proof')} index={sectionIndex('proof')} density="open" reveal="crop">
+    <SectionFrame
+      id={sectionId('proof')}
+      index={sectionIndex('proof')}
+      density="open"
+      reveal="crop"
+      tone="surface"
+    >
       <div className={styles.proof}>
         <header className={styles.proofHead}>
           <h2 className={styles.proofTitle}>proof</h2>
@@ -31,7 +38,9 @@ export function ProofSection() {
           <dl className={styles.metrics}>
             {metrics.map((metric) => (
               <div key={metric.id} className={styles.metric}>
-                <dd className={styles.metricValue}>{line(metric.value)}</dd>
+                <dd className={styles.metricValue}>
+                  <CountUp value={line(metric.value) ?? ''} />
+                </dd>
                 {line(metric.label) && (
                   <dt className={`${styles.metricLabel} u-kr`}>{line(metric.label)}</dt>
                 )}

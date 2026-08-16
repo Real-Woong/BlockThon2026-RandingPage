@@ -2,8 +2,14 @@ import type { WordField } from './wordField';
 import type { PixelWord } from './pixelFont';
 
 type EngineOptions = {
-  /** The box the cubes are positioned inside. */
+  /**
+   * The band the word is set in. Separate from `fieldEl` on purpose: the word
+   * has to stay clear of the copy, while the loose field spreads across the
+   * whole hero so the type sits inside the field rather than under a banner.
+   */
   stage: HTMLElement;
+  /** The full-bleed box the cubes are positioned inside. */
+  fieldEl: HTMLElement;
   cubes: HTMLElement[];
   lines: SVGLineElement[];
   field: WordField;
@@ -20,7 +26,7 @@ const DIRECT_MIN = 14;
 const REACTION_COOLDOWN = 700;
 const NEIGHBOURS = 6;
 /** Loose blocks kept around the word; the rest of the pool parks invisible. */
-const AMBIENT_VISIBLE = 34;
+const AMBIENT_VISIBLE = 58;
 
 const REACTION_CLASS: Record<Reaction, string> = {
   pulse: 'is-pulse',
@@ -56,15 +62,21 @@ const clamp = (n: number, min = 0, max = 1) => Math.min(max, Math.max(min, n));
  * runs on its own clock so the page scrolls normally past it.
  */
 export function createFieldEngine(options: EngineOptions) {
-  const { stage, cubes, lines, field, compact, coarsePointer, reducedMotion } = options;
+  const { stage, fieldEl, cubes, lines, field, compact, coarsePointer, reducedMotion } = options;
 
   const poolSize = field.poolSize;
 
+  /* The field box: ambient scatter, pointer hit-testing, cube coordinate space. */
   let width = 0;
   let height = 0;
-  /* Cached stage offset: reading it per pointermove forces a reflow. */
+  /* Cached field offset: reading it per pointermove forces a reflow. */
   let stageLeft = 0;
   let stageTop = 0;
+  /* The word band, expressed in the field's coordinate space. */
+  let wordWidth = 0;
+  let wordHeight = 0;
+  let wordOffsetX = 0;
+  let wordOffsetY = 0;
   let activeWord = -1;
   let directRadius = DIRECT_MIN;
 
@@ -94,11 +106,11 @@ export function createFieldEngine(options: EngineOptions) {
     return compact ? layout.compact : layout.wide;
   };
 
-  /** Where the word sits inside the stage, and how big one pixel is. */
+  /** Where the word sits inside the word band, and how big one pixel is. */
   function metricsFor(word: PixelWord) {
     const maxCell = compact ? MAX_CELL_COMPACT : MAX_CELL_WIDE;
-    const maxWidth = width * (compact ? 0.88 : 0.74);
-    const maxHeight = height * (compact ? 0.72 : 0.84);
+    const maxWidth = wordWidth * (compact ? 0.88 : 0.74);
+    const maxHeight = wordHeight * (compact ? 0.72 : 0.84);
     const cell = Math.max(
       2,
       Math.min(maxWidth / Math.max(word.cols, 1), maxHeight / Math.max(word.rows, 1), maxCell),
@@ -108,18 +120,26 @@ export function createFieldEngine(options: EngineOptions) {
 
     return {
       cell,
-      originX: (width - artWidth) / 2,
-      originY: height * 0.5 - artHeight / 2,
+      // Centred in the band, then shifted into the field's coordinate space —
+      // the cubes are positioned inside the field, not inside the band.
+      originX: wordOffsetX + (wordWidth - artWidth) / 2,
+      originY: wordOffsetY + wordHeight * 0.5 - artHeight / 2,
       artWidth,
     };
   }
 
   function readStage() {
-    const rect = stage.getBoundingClientRect();
+    const rect = fieldEl.getBoundingClientRect();
     width = rect.width;
     height = rect.height;
     stageLeft = rect.left;
     stageTop = rect.top;
+
+    const band = stage.getBoundingClientRect();
+    wordWidth = band.width;
+    wordHeight = band.height;
+    wordOffsetX = band.left - rect.left;
+    wordOffsetY = band.top - rect.top;
   }
 
   /** Nearest cubes among the lit ones, for signal propagation. */

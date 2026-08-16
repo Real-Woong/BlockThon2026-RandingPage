@@ -12,9 +12,12 @@
   gap: clamp(2.5rem, 6vw, 5rem);
 }
 
+/* The statement carries its own weight contrast: the claim lands heavy, the
+   resolution answers light. One voice, two registers — the indent alone was
+   doing this job before, and an indent is not a hierarchy. */
 .statement {
   font-size: var(--display-l);
-  font-weight: 400;
+  font-weight: var(--w-display);
   line-height: 1.02;
   letter-spacing: -0.04em;
   max-width: 16ch;
@@ -28,11 +31,13 @@
 
 .statementRow + .statementRow {
   margin-left: clamp(0px, 4vw, 72px);
+  font-weight: var(--w-quiet);
   color: var(--muted);
 }
 
 .manifestoBody {
   font-size: var(--body-l);
+  font-weight: var(--w-quiet);
   line-height: 1.7;
   color: var(--muted);
   max-width: 46ch;
@@ -104,6 +109,7 @@
 
 .stackIntro {
   font-size: var(--body-l);
+  font-weight: var(--w-quiet);
   line-height: 1.6;
   max-width: 40ch;
 }
@@ -167,6 +173,7 @@
 
 .outputValue {
   font-size: var(--body-l);
+  font-weight: var(--w-strong);
   line-height: 1.5;
 }
 
@@ -246,6 +253,7 @@
 
 .programTitle {
   font-size: var(--heading);
+  font-weight: var(--w-display);
   letter-spacing: -0.04em;
 }
 
@@ -269,6 +277,27 @@
   border-top: 1px solid var(--hairline);
 }
 
+/* Vertical on mobile, horizontal from 1120px — see the breakpoint below. */
+.timelineSpine {
+  position: absolute;
+  left: 4px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--electric-blue);
+  transform: scaleY(1);
+  transform-origin: top center;
+}
+
+:global(html[data-motion='on']) .timelineSpine {
+  transform: scaleY(0);
+  transition: transform var(--t-draw) var(--ease-out);
+}
+
+:global(html[data-motion='on']) [data-inview='true'] .timelineSpine {
+  transform: scaleY(1);
+}
+
 .phaseMarker {
   position: absolute;
   left: 0;
@@ -276,6 +305,17 @@
   width: 9px;
   height: 9px;
   background: var(--electric-blue);
+}
+
+:global(html[data-motion='on']) .phaseMarker {
+  transform: scale(0);
+  transition: transform var(--t-reveal) var(--ease-out);
+  /* Each marker lands as the spine passes it. */
+  transition-delay: calc(220ms + var(--i, 0) * 150ms);
+}
+
+:global(html[data-motion='on']) [data-inview='true'] .phaseMarker {
+  transform: scale(1);
 }
 
 .phase:last-child {
@@ -298,6 +338,7 @@
 
 .phaseTitle {
   font-size: var(--heading-s);
+  font-weight: var(--w-strong);
   line-height: 1.25;
 }
 
@@ -321,6 +362,26 @@
   .timeline {
     grid-template-columns: repeat(var(--phase-count, 4), minmax(0, 1fr));
     border-top: 1px solid var(--hairline);
+  }
+
+  /* Same element, rotated role: it now draws left-to-right along the top rule. */
+  .timelineSpine {
+    left: 0;
+    right: 0;
+    top: -1px;
+    bottom: auto;
+    width: auto;
+    height: 1px;
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
+
+  :global(html[data-motion='on']) .timelineSpine {
+    transform: scaleX(0);
+  }
+
+  :global(html[data-motion='on']) [data-inview='true'] .timelineSpine {
+    transform: scaleX(1);
   }
 
   .phase {
@@ -371,19 +432,19 @@
   gap: clamp(1.5rem, 3vw, 3rem);
 }
 
+/* No rules, no rows: the names stack directly on the ground. */
 .trackList {
   display: grid;
-  border-top: 1px solid var(--hairline);
+  gap: clamp(0.25rem, 1.2vw, 0.75rem);
 }
 
 .trackTab {
   display: grid;
-  grid-template-columns: 3rem 1fr 10px;
-  align-items: center;
-  gap: 1rem;
-  min-height: 56px;
-  padding: 1rem 0;
-  border-bottom: 1px solid var(--hairline);
+  grid-template-columns: 10px 2.5rem minmax(0, 1fr);
+  align-items: baseline;
+  gap: clamp(0.75rem, 1.6vw, 1.25rem);
+  min-height: 44px;
+  padding: 0.35rem 0;
   text-align: left;
   color: var(--muted);
   transition: color var(--t-micro) var(--ease-out);
@@ -399,16 +460,25 @@
   letter-spacing: 0.14em;
 }
 
+/* Unselected tracks sit light and receded; the selected one takes full weight.
+   Deliberately not a size change — the row height stays put, so the list does
+   not jump as you move through it. */
 .trackName {
-  font-size: var(--heading-s);
-  line-height: 1.2;
-  letter-spacing: -0.02em;
+  font-size: clamp(1.625rem, 4vw, 3rem);
+  font-weight: var(--w-quiet);
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+}
+
+.trackTab[aria-selected='true'] .trackName {
+  font-weight: var(--w-display);
 }
 
 /* Selection activates the node, it does not enlarge the row. */
 .trackNode {
   width: 10px;
   height: 10px;
+  align-self: center;
   border: 1px solid var(--hairline-strong);
   transition:
     background-color var(--t-micro) var(--ease-out),
@@ -436,6 +506,7 @@
 
 .trackBody {
   font-size: var(--body);
+  font-weight: var(--w-quiet);
   line-height: 1.75;
   color: var(--muted);
 }
@@ -484,21 +555,34 @@
   color: var(--muted);
 }
 
+/* A ladder, not a table. Each tier steps further in behind a blue rule that
+   fades as the rank drops, so the ordering is legible before any of it is
+   read. Works from one tier to many — nothing here assumes three. */
 .supportList {
   display: grid;
-  border-top: 1px solid var(--hairline);
+  gap: clamp(1.25rem, 2.5vw, 2rem);
 }
 
 .supportRow {
   display: grid;
-  gap: 0.25rem 2rem;
-  padding: 1.125rem 0;
-  border-bottom: 1px solid var(--hairline);
+  gap: 0.3rem;
+  padding-left: clamp(0.875rem, 1.5vw, 1.25rem);
+  margin-left: calc(var(--i, 0) * clamp(0.75rem, 2.5vw, 2.5rem));
+  border-left: 2px solid var(--electric-blue);
+  /* Rank reads as signal strength; floored so a long list never disappears. */
+  opacity: max(0.45, calc(1 - var(--i, 0) * 0.16));
 }
 
 .supportLabel {
   font-size: var(--body-l);
+  font-weight: var(--w-strong);
   line-height: 1.4;
+}
+
+/* The top tier is the headline of this section, so it gets the extra step. */
+.supportRow:first-child .supportLabel {
+  font-size: var(--heading-s);
+  font-weight: var(--w-display);
 }
 
 .supportDetail {
@@ -523,8 +607,11 @@
 }
 
 @media (min-width: 768px) {
+  /* Label and detail sit on one baseline once there is room; the ladder step
+     is carried by the margin, not by a column split. */
   .supportRow {
-    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: 0.3rem clamp(1.5rem, 3vw, 3rem);
     align-items: baseline;
   }
 }
@@ -538,6 +625,7 @@
 
 .criteriaTitle {
   font-size: var(--heading);
+  font-weight: var(--w-display);
   letter-spacing: -0.04em;
 }
 
@@ -558,6 +646,7 @@
 .criterionIndex {
   font-family: var(--font-display);
   font-size: clamp(2rem, 4vw, 3.25rem);
+  font-weight: var(--w-quiet);
   line-height: 0.9;
   letter-spacing: -0.05em;
   color: var(--muted);
@@ -571,6 +660,7 @@
 
 .criterionTitle {
   font-size: var(--heading-s);
+  font-weight: var(--w-strong);
   line-height: 1.25;
 }
 
@@ -583,23 +673,63 @@
 
 .criterionWeight {
   grid-column: 2;
+  display: grid;
+  gap: 0.4rem;
   font-family: var(--font-mono);
   font-size: var(--meta-s);
   letter-spacing: 0.16em;
   color: var(--electric-blue);
 }
 
+/* The weight, drawn. Track is the section hairline; fill is `connection` blue,
+   which is what electric blue is reserved for (DESIGN_SYSTEM.md §3). */
+.criterionBar {
+  display: block;
+  height: 3px;
+  background: var(--hairline);
+}
+
+.criterionBarFill {
+  display: block;
+  height: 100%;
+  background: var(--electric-blue);
+  transform: scaleX(var(--weight, 0));
+  transform-origin: left center;
+}
+
+:global(html[data-motion='on']) .criterionBarFill {
+  transform: scaleX(0);
+  transition: transform var(--t-draw) var(--ease-out);
+  /* Bars land one after another so the ranking reads as a sequence. */
+  transition-delay: calc(160ms + var(--i, 0) * var(--stagger));
+}
+
+/* Must out-specify the `html[data-motion='on']` rule above, not just follow it:
+   an element selector there outweighs a bare attribute selector here. */
+:global(html[data-motion='on']) [data-inview='true'] .criterionBarFill {
+  transform: scaleX(var(--weight, 0));
+}
+
 @media (min-width: 768px) {
   .criterion {
-    grid-template-columns: 5rem minmax(0, 1fr) 6rem;
+    grid-template-columns: 5rem minmax(0, 1fr) 9rem;
     align-items: baseline;
   }
 
   .criterionWeight {
     grid-column: 3;
+    justify-items: end;
+  }
+
+  .criterionBar {
+    width: 100%;
+  }
+
+  .criterionWeightValue {
     text-align: right;
   }
 }
+
 
 /* --- 07 Proof ----------------------------------------------------------- */
 
@@ -615,11 +745,13 @@
 
 .proofTitle {
   font-size: var(--heading);
+  font-weight: var(--w-display);
   letter-spacing: -0.04em;
 }
 
 .proofIntro {
   font-size: var(--body-l);
+  font-weight: var(--w-quiet);
   line-height: 1.65;
   color: var(--muted);
 }
@@ -639,6 +771,7 @@
   margin: 0;
   font-family: var(--font-display);
   font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: var(--w-display);
   line-height: 0.9;
   letter-spacing: -0.05em;
 }
@@ -745,6 +878,7 @@
 
 .faqTitle {
   font-size: var(--heading);
+  font-weight: var(--w-display);
   letter-spacing: -0.04em;
 }
 
@@ -790,7 +924,7 @@
 
 .finalMessage {
   font-size: var(--display-l);
-  font-weight: 400;
+  font-weight: var(--w-display);
   line-height: 1.02;
   letter-spacing: -0.04em;
   max-width: 15ch;
@@ -802,12 +936,16 @@
   display: block;
 }
 
+/* Same two-register treatment as the manifesto statement, so the page opens
+   and closes in the same voice. */
 .finalRow + .finalRow {
+  font-weight: var(--w-quiet);
   color: var(--muted);
 }
 
 .finalBody {
   font-size: var(--body-l);
+  font-weight: var(--w-quiet);
   line-height: 1.7;
   color: var(--muted);
 }
@@ -829,4 +967,22 @@
 
 .finalContact:hover {
   color: var(--text);
+}
+
+/* --- Reduced motion ------------------------------------------------------
+ * Every drawn element resolves to its finished state with no transition. Kept
+ * last in the file on purpose: these must outrank both the `data-motion` start
+ * states and their 1120px variants, which share the same specificity.
+ */
+@media (prefers-reduced-motion: reduce) {
+  :global(html[data-motion='on']) .timelineSpine,
+  :global(html[data-motion='on']) .phaseMarker {
+    transform: none;
+    transition: none;
+  }
+
+  :global(html[data-motion='on']) .criterionBarFill {
+    transform: scaleX(var(--weight, 0));
+    transition: none;
+  }
 }

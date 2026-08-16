@@ -22,7 +22,13 @@ export function StackSection() {
   const output = line(stack?.output);
 
   return (
-    <SectionFrame id={sectionId('stack')} index={sectionIndex('stack')} density="technical" reveal="line">
+    <SectionFrame
+      id={sectionId('stack')}
+      index={sectionIndex('stack')}
+      density="technical"
+      reveal="line"
+      tone="field"
+    >
       <div className={styles.stack}>
         <header className={styles.stackHead}>
           <h2 className={styles.stackTitle}>stack</h2>
