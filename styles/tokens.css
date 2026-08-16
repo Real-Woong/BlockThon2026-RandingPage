@@ -1,0 +1,73 @@
+/* Design tokens — DESIGN_SYSTEM.md §3–§6. Single source for color, type, grid. */
+
+:root {
+  /* --- Color (DESIGN_SYSTEM.md §3) --- */
+  --canvas: #03050a;
+  --surface: #080c16;
+  --surface-raised: #0d1322;
+  --brand-blue: #2848b8;
+  --electric-blue: #4d72ff;
+  --signal-green: #b8ff36;
+  --text: #f5f7ff;
+  --muted: #8e98aa;
+  --hairline: rgba(142, 152, 170, 0.22);
+  --hairline-strong: rgba(142, 152, 170, 0.4);
+  --grid: rgba(77, 114, 255, 0.14);
+
+  /* --- Type (DESIGN_SYSTEM.md §4) --- */
+  --font-display: 'Helvetica Neue', 'Inter', 'Pretendard', system-ui, -apple-system,
+    'Segoe UI', sans-serif;
+  --font-sans: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, -apple-system,
+    'Segoe UI', sans-serif;
+  --font-mono: 'SFMono-Regular', ui-monospace, 'JetBrains Mono', 'Menlo', 'Consolas', monospace;
+
+  --display-xl: clamp(4rem, 11vw, 10rem);
+  --display-l: clamp(3rem, 7vw, 7rem);
+  --heading: clamp(2rem, 4vw, 4rem);
+  --heading-s: clamp(1.375rem, 2.2vw, 2rem);
+  --body-l: clamp(1.125rem, 1.8vw, 1.5rem);
+  --body: 1rem;
+  --meta: 0.8125rem;
+  --meta-s: 0.75rem;
+
+  /* --- Grid and spacing (DESIGN_SYSTEM.md §5) --- */
+  --max-width: 1440px;
+  --gutter: 20px;
+  /* Room kept clear on the right for the section index rail. */
+  --rail-space: 0px;
+  --shell-width: min(100% - (var(--gutter) * 2) - var(--rail-space), var(--max-width));
+
+  /* Section rhythm is intentionally uneven; sections pick one of these. */
+  --pad-dense: clamp(3.5rem, 7vw, 6rem);
+  --pad-quiet: clamp(6rem, 15vw, 13rem);
+  --pad-technical: clamp(4.5rem, 9vw, 8rem);
+  --pad-compact: clamp(3rem, 6vw, 5rem);
+
+  /* --- Shape (DESIGN_SYSTEM.md §6) --- */
+  --radius-none: 0px;
+  --radius-pill: 999px;
+
+  /* --- Motion (INTERACTIONS.md §7) --- */
+  --t-micro: 150ms;
+  --t-reveal: 380ms;
+  --t-section: 720ms;
+  --ease-out: cubic-bezier(0.16, 0.84, 0.44, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --header-height: 64px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --gutter: 24px;
+    --header-height: 72px;
+  }
+}
+
+@media (min-width: 1120px) {
+  :root {
+    --rail-space: 64px;
+    --gutter: 32px;
+    --header-height: 80px;
+  }
+}

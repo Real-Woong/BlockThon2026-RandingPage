@@ -1,0 +1,38 @@
+.mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  color: var(--text);
+}
+
+/* Safe margin: 20% of the mark's width (DESIGN_SYSTEM.md §2). */
+.symbol {
+  display: inline-flex;
+  padding: 0.2em;
+}
+
+.symbol img {
+  width: auto;
+  height: 1.6em;
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  /* The name is always lowercase, never spaced out (DESIGN_SYSTEM.md §2). */
+  text-transform: lowercase;
+  line-height: 1;
+}
+
+.sm {
+  font-size: 0.9375rem;
+}
+
+.md {
+  font-size: 1.125rem;
+}
+
+.lg {
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+}

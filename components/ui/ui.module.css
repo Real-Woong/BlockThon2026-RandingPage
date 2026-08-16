@@ -1,0 +1,291 @@
+/* Shared primitives: status labels, action links, hairlines, index rail. */
+
+/* --- StatusLabel -------------------------------------------------------- */
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  font-family: var(--font-mono);
+  font-size: var(--meta-s);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.statusDot {
+  width: 5px;
+  height: 5px;
+  background: var(--signal-green);
+  flex: none;
+}
+
+.status[data-tone='quiet'] .statusDot {
+  background: var(--electric-blue);
+}
+
+/* --- SignalLine --------------------------------------------------------- */
+
+.signal {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  color: var(--muted);
+}
+
+.signalNode {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border: 1px solid var(--hairline-strong);
+}
+
+.signalRule {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, var(--hairline-strong), var(--hairline) 60%, transparent);
+}
+
+.signal[data-align='end'] .signalRule {
+  background: linear-gradient(to left, var(--hairline-strong), var(--hairline) 60%, transparent);
+}
+
+/* --- ActionLink --------------------------------------------------------- */
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75em;
+  min-height: 48px;
+  padding: 0 1.5rem;
+  font-family: var(--font-mono);
+  font-size: var(--meta);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--radius-none);
+  background: transparent;
+  color: var(--text);
+  transition:
+    border-color var(--t-micro) var(--ease-out),
+    background-color var(--t-micro) var(--ease-out),
+    color var(--t-micro) var(--ease-out);
+}
+
+.action::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: currentColor;
+  opacity: 0.7;
+}
+
+.action[data-variant='primary'] {
+  background: var(--electric-blue);
+  border-color: var(--electric-blue);
+  color: #050810;
+}
+
+.action[data-variant='primary']:hover {
+  background: var(--text);
+  border-color: var(--text);
+}
+
+.action[data-variant='secondary']:hover {
+  border-color: var(--electric-blue);
+  color: var(--electric-blue);
+}
+
+.action[data-variant='quiet'] {
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  color: var(--muted);
+}
+
+.action[data-variant='quiet']:hover {
+  color: var(--text);
+}
+
+.action[aria-disabled='true'] {
+  cursor: default;
+  opacity: 0.55;
+  border-style: dashed;
+  background: transparent;
+  color: var(--muted);
+}
+
+/* --- SectionIndex rail --------------------------------------------------- */
+
+.rail {
+  position: fixed;
+  top: 50%;
+  right: clamp(16px, 2vw, 28px);
+  z-index: 3;
+  transform: translateY(-50%);
+  display: none;
+  flex-direction: column;
+  gap: 14px;
+  pointer-events: auto;
+}
+
+.railItem {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: var(--meta-s);
+  letter-spacing: 0.1em;
+  /* Dimmed by colour rather than opacity: 12px type has to hold 4.5:1. */
+  color: var(--muted);
+  transition: color var(--t-micro) var(--ease-out);
+}
+
+.railItem:hover,
+.railItem[data-current='true'] {
+  color: var(--text);
+}
+
+/* The hero cube continues into the page as the index dot. */
+.railDot {
+  width: 6px;
+  height: 6px;
+  border: 1px solid var(--hairline-strong);
+  transition:
+    background-color var(--t-micro) var(--ease-out),
+    border-color var(--t-micro) var(--ease-out);
+}
+
+.railItem[data-current='true'] .railDot {
+  background: var(--signal-green);
+  border-color: var(--signal-green);
+}
+
+@media (min-width: 1120px) {
+  .rail {
+    display: flex;
+  }
+}
+
+/* --- Accordion ---------------------------------------------------------- */
+
+.accordion {
+  border-top: 1px solid var(--hairline);
+}
+
+.accordionItem {
+  border-bottom: 1px solid var(--hairline);
+}
+
+.accordionTrigger {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2rem;
+  width: 100%;
+  min-height: 56px;
+  padding: 1.25rem 0;
+  text-align: left;
+  font-size: var(--body-l);
+  line-height: 1.4;
+  word-break: keep-all;
+  transition: color var(--t-micro) var(--ease-out);
+}
+
+.accordionTrigger:hover {
+  color: var(--electric-blue);
+}
+
+.accordionSign {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  position: relative;
+}
+
+.accordionSign::before,
+.accordionSign::after {
+  content: '';
+  position: absolute;
+  inset: 50% 0 auto 0;
+  height: 1px;
+  background: currentColor;
+}
+
+.accordionSign::after {
+  transform: rotate(90deg);
+  transition: transform var(--t-reveal) var(--ease-out);
+}
+
+.accordionTrigger[aria-expanded='true'] .accordionSign::after {
+  transform: rotate(0deg);
+}
+
+.accordionPanel {
+  padding: 0 0 1.75rem;
+  max-width: 60ch;
+  color: var(--muted);
+  word-break: keep-all;
+}
+
+/* --- LogoGrid ----------------------------------------------------------- */
+
+.logoGroup + .logoGroup {
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+}
+
+.logoGroupHead {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+/*
+ * Flex rather than fixed grid tracks: the row always fills, so one partner or
+ * five never leaves an empty plate behind (CONTENT.md §16).
+ */
+.logoGrid {
+  display: flex;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--hairline);
+  border-left: 1px solid var(--hairline);
+}
+
+.logoCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 160px;
+  min-width: 0;
+  min-height: 96px;
+  padding: 1.5rem 1rem;
+  border-right: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+  color: var(--muted);
+  text-align: center;
+  font-size: var(--meta);
+  overflow-wrap: anywhere;
+  transition: color var(--t-micro) var(--ease-out);
+}
+
+.logoGrid[data-tier='lead'] .logoCell {
+  flex-basis: 300px;
+  min-height: 140px;
+  font-size: var(--body-l);
+  color: var(--text);
+}
+
+.logoCell:hover {
+  color: var(--text);
+}
+
+.logoCell img {
+  max-height: 40px;
+  width: auto;
+  object-fit: contain;
+}

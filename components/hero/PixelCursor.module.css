@@ -1,0 +1,41 @@
+.marker {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 200ms linear;
+  will-change: transform;
+}
+
+.marker[data-visible='true'] {
+  opacity: 1;
+}
+
+.square {
+  position: absolute;
+  left: -7px;
+  top: -7px;
+  width: 14px;
+  height: 14px;
+  border: 1px solid rgba(77, 114, 255, 0.75);
+}
+
+/* Offset from the pointer so it never sits on top of what is being read. */
+.readout {
+  position: absolute;
+  left: 14px;
+  top: 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: rgba(142, 152, 170, 0.7);
+  white-space: nowrap;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .marker {
+    display: none;
+  }
+}

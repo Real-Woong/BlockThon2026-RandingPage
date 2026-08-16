@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="blockblock">
+  <!--
+    Placeholder icon. One block drawn with the same axonometry and tokens as the
+    hero field — deliberately not the blockblock logo, which is still a temporary
+    reference asset. Replace this file when the final mark exists.
+  -->
+  <rect width="32" height="32" fill="#03050a" />
+  <path d="M8 14h12v12H8z" fill="#2848b8" />
+  <path d="M8 14l6-6h12l-6 6z" fill="#4d72ff" />
+  <path d="M20 14l6-6v12l-6 6z" fill="#0d1322" />
+  <path
+    d="M8 14h12v12H8zM8 14l6-6h12l-6 6M20 14l6-6v12l-6 6"
+    fill="none"
+    stroke="#4d72ff"
+    stroke-opacity="0.55"
+    stroke-width="1"
+  />
+</svg>

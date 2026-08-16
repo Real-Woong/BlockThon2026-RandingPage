@@ -1,0 +1,48 @@
+.fallback {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--canvas);
+}
+
+/* Off-centre light source, weighted to the field side of the composition. */
+.wash {
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(58% 46% at 74% 34%, rgba(40, 72, 184, 0.34), transparent 70%),
+    radial-gradient(40% 38% at 88% 78%, rgba(77, 114, 255, 0.14), transparent 72%);
+}
+
+/*
+ * The 2D lattice the pixel grid sits on — the same cell rhythm as the cubes,
+ * so the letterforms read as placed rather than floating.
+ */
+.lattice {
+  position: absolute;
+  inset: 0;
+  opacity: 0.42;
+  background-image:
+    linear-gradient(to right, var(--grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+  background-size: calc(100% / 12) calc(100% / 8);
+  mask-image: radial-gradient(120% 90% at 70% 40%, #000 30%, transparent 88%);
+  transition: opacity 400ms var(--ease-out);
+}
+
+/* One hairline that reads as the base plane of the field. */
+.horizon {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: clamp(72px, 14vh, 150px);
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--hairline) 22%, var(--hairline) 74%, transparent);
+  opacity: 0.7;
+}
+
+@media (max-width: 767px) {
+  .lattice {
+    background-size: calc(100% / 6) calc(100% / 8);
+  }
+}

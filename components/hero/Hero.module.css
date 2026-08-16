@@ -1,0 +1,322 @@
+/*
+ * 00 — Hero / Signal.
+ *
+ * One screen: the cube field owns the middle, the copy sits at the bottom, and
+ * the page scrolls straight past into the content. Nothing here is pinned.
+ */
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-top: calc(var(--header-height) + 24px);
+  padding-bottom: clamp(56px, 8vh, 96px);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/*
+ * The field box. It is a flow item, not an overlay: the word gets the space
+ * left over above the copy, so the two can never collide however long the
+ * confirmed copy turns out to be.
+ */
+.stage {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: clamp(180px, 26svh, 380px);
+  margin-bottom: clamp(1.5rem, 4vh, 3rem);
+}
+
+/* Fades the field into the copy below instead of dimming the whole screen. */
+.readability {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 45%;
+  z-index: 1;
+  background: linear-gradient(to top, var(--canvas) 0%, rgba(3, 5, 10, 0.55) 45%, transparent 100%);
+  pointer-events: none;
+}
+
+.shell {
+  position: relative;
+  z-index: 2;
+  flex: none;
+  width: var(--shell-width);
+  margin-inline: auto;
+}
+
+/* --- Copy --------------------------------------------------------------- */
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.opening {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  max-width: 30rem;
+  margin-bottom: clamp(1rem, 2.5vh, 1.75rem);
+}
+
+.index {
+  flex: none;
+}
+
+.openingRule {
+  flex: 1;
+  min-width: 32px;
+}
+
+.organizer {
+  flex: none;
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  text-transform: lowercase;
+  color: var(--text);
+}
+
+/* The cubes carry the wordmark, so the type sits at caption scale. */
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4.4vw, 3.75rem);
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  margin-bottom: clamp(0.875rem, 2vh, 1.5rem);
+}
+
+.titleWord {
+  display: inline;
+}
+
+.titleWord + .titleWord {
+  color: rgba(199, 209, 228, 0.62);
+}
+
+.narrative {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.75rem;
+}
+
+.narrativeStep {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: var(--meta-s);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.narrativeStep:last-child {
+  color: var(--text);
+}
+
+/* Leading connector: a wrapped line starts with the link, never ends with a
+   dangling one (checked at 390px, where the chain breaks after CONNECTION). */
+.narrativeStep:not(:first-child)::before {
+  content: '';
+  width: 14px;
+  height: 1px;
+  background: var(--hairline-strong);
+}
+
+.descriptor {
+  font-size: var(--body-l);
+  color: var(--text);
+  margin-bottom: clamp(0.75rem, 1.5vh, 1.25rem);
+  max-width: 28ch;
+}
+
+.headline {
+  font-size: var(--heading-s);
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+  margin-top: clamp(0.875rem, 2vh, 1.5rem);
+  max-width: 34ch;
+}
+
+.headlineRow {
+  display: block;
+}
+
+.body {
+  font-size: var(--body);
+  color: var(--muted);
+  margin-bottom: clamp(1.25rem, 3vh, 2rem);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: clamp(1.25rem, 3vh, 1.75rem);
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin-top: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: var(--meta);
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.fact + .fact {
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.fact + .fact::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 6px;
+  height: 1px;
+  background: var(--hairline-strong);
+}
+
+.fact dd {
+  margin: 0;
+}
+
+/* --- Word readout + rail ------------------------------------------------ */
+
+.wordbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  margin-top: clamp(1.5rem, 4vh, 2.75rem);
+  padding-top: 1rem;
+  border-top: 1px solid var(--hairline);
+}
+
+.wordNow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+  min-height: 1.6em;
+}
+
+.wordText {
+  font-family: var(--font-mono);
+  font-size: var(--meta);
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  color: var(--text);
+}
+
+.wordText[data-kind='sui'] {
+  color: var(--electric-blue);
+}
+
+.wordText[data-kind='walrus'] {
+  color: rgba(224, 233, 250, 0.95);
+}
+
+.wordMeaning {
+  font-family: var(--font-mono);
+  font-size: var(--meta-s);
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.rail {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.railItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  padding-inline: 8px;
+  font-family: var(--font-mono);
+  font-size: var(--meta-s);
+  letter-spacing: 0.1em;
+  /* Dimmed by colour rather than opacity: 12px type has to hold 4.5:1. */
+  color: var(--muted);
+  transition: color var(--t-micro) var(--ease-out);
+}
+
+.railItem:hover,
+.railItem[data-current='true'] {
+  color: var(--text);
+}
+
+/* One cube from the field, flattened into an index dot. */
+.railDot {
+  width: 6px;
+  height: 6px;
+  border: 1px solid var(--hairline-strong);
+  transition:
+    background-color var(--t-micro) var(--ease-out),
+    border-color var(--t-micro) var(--ease-out);
+}
+
+.railItem[data-current='true'] .railDot {
+  background: var(--signal-green);
+  border-color: var(--signal-green);
+}
+
+/* --- Scroll cue --------------------------------------------------------- */
+
+.cue {
+  position: absolute;
+  z-index: 2;
+  right: var(--gutter);
+  bottom: 26px;
+  display: none;
+  align-items: center;
+  gap: 10px;
+}
+
+.cueRule {
+  width: 46px;
+  height: 1px;
+  background: linear-gradient(to left, var(--hairline-strong), transparent);
+}
+
+.cueLabel {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* --- Breakpoints -------------------------------------------------------- */
+
+@media (min-width: 768px) {
+  .stage {
+    min-height: clamp(220px, 30svh, 420px);
+  }
+
+  .cue {
+    display: flex;
+  }
+}
+
+@media (min-width: 1120px) {
+  .content {
+    max-width: 62%;
+  }
+}

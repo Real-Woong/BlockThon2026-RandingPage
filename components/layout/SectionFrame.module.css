@@ -1,0 +1,147 @@
+.section {
+  position: relative;
+}
+
+/* Rhythm changes per section: dense field → quiet statement → diagram → … */
+.section[data-density='dense'] {
+  padding-block: var(--pad-dense);
+}
+.section[data-density='quiet'] {
+  padding-block: var(--pad-quiet);
+}
+.section[data-density='technical'] {
+  padding-block: var(--pad-technical);
+  border-top: 1px solid var(--hairline);
+}
+.section[data-density='compact'] {
+  padding-block: var(--pad-compact);
+}
+.section[data-density='open'] {
+  padding-block: var(--pad-technical);
+}
+.section[data-density='focus'] {
+  padding-block: var(--pad-quiet);
+  border-top: 1px solid var(--hairline);
+}
+
+.shell {
+  width: var(--shell-width);
+  margin-inline: auto;
+}
+
+/* The section number sits in the margin, aligned to the first baseline. */
+.index {
+  position: absolute;
+  top: calc(var(--pad-compact) * 0.5);
+  left: var(--gutter);
+  font-family: var(--font-mono);
+  font-size: var(--meta-s);
+  letter-spacing: 0.18em;
+  color: var(--muted);
+  opacity: 0;
+  transition: opacity var(--t-section) var(--ease-out);
+}
+
+.section[data-inview='true'] .index {
+  opacity: 1;
+}
+
+@media (min-width: 1120px) {
+  /* Sits in the margin, 44px outside the shell's left edge. */
+  .index {
+    left: max(var(--gutter), calc((100% - var(--shell-width)) / 2 - 44px));
+  }
+}
+
+/* --- Enter patterns (INTERACTIONS.md §7) --------------------------------
+ * Every hidden state is scoped to html[data-motion='on'], set by the inline
+ * script in app/layout.tsx. Without JavaScript nothing is hidden in the first
+ * place, so a section can never be stranded at opacity 0.
+ */
+
+:global(html[data-motion='on']) .section[data-reveal] .shell {
+  transition:
+    opacity var(--t-section) var(--ease-out),
+    transform var(--t-section) var(--ease-out),
+    clip-path var(--t-section) var(--ease-out);
+}
+
+/* pixel mask reveal */
+:global(html[data-motion='on']) .section[data-reveal='mask'] .shell {
+  clip-path: inset(0 0 100% 0);
+  opacity: 0;
+}
+:global(html[data-motion='on']) .section[data-reveal='mask'][data-inview='true'] .shell {
+  clip-path: inset(0 0 0 0);
+  opacity: 1;
+}
+
+/* line draw — the section rule extends before the content settles */
+.section[data-reveal='line'] {
+  overflow: hidden;
+}
+.section[data-reveal='line']::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--hairline-strong);
+  transform-origin: left center;
+  transition: transform var(--t-section) var(--ease-out);
+}
+:global(html[data-motion='on']) .section[data-reveal='line']::before {
+  transform: scaleX(0);
+}
+:global(html[data-motion='on']) .section[data-reveal='line'][data-inview='true']::before {
+  transform: scaleX(1);
+}
+:global(html[data-motion='on']) .section[data-reveal='line'] .shell {
+  opacity: 0;
+}
+:global(html[data-motion='on']) .section[data-reveal='line'][data-inview='true'] .shell {
+  opacity: 1;
+  transition-delay: 160ms;
+}
+
+/* index activation — content arrives from the index side */
+:global(html[data-motion='on']) .section[data-reveal='index'] .shell {
+  opacity: 0;
+  transform: translateX(-14px);
+}
+:global(html[data-motion='on']) .section[data-reveal='index'][data-inview='true'] .shell {
+  opacity: 1;
+  transform: none;
+}
+
+/* depth to flat */
+:global(html[data-motion='on']) .section[data-reveal='depth'] .shell {
+  opacity: 0;
+  transform: scale(0.985);
+}
+:global(html[data-motion='on']) .section[data-reveal='depth'][data-inview='true'] .shell {
+  opacity: 1;
+  transform: none;
+}
+
+/* crop reveal */
+:global(html[data-motion='on']) .section[data-reveal='crop'] .shell {
+  clip-path: inset(0 22% 0 0);
+  opacity: 0;
+}
+:global(html[data-motion='on']) .section[data-reveal='crop'][data-inview='true'] .shell {
+  clip-path: inset(0 0 0 0);
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section[data-reveal] .shell {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
+  .section[data-reveal='line']::before {
+    transform: scaleX(1);
+  }
+}

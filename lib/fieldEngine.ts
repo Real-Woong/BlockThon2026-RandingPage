@@ -1,0 +1,453 @@
+import type { WordField } from './wordField';
+import type { PixelWord } from './pixelFont';
+
+type EngineOptions = {
+  /** The box the cubes are positioned inside. */
+  stage: HTMLElement;
+  cubes: HTMLElement[];
+  lines: SVGLineElement[];
+  field: WordField;
+  compact: boolean;
+  coarsePointer: boolean;
+  reducedMotion: boolean;
+};
+
+type Reaction = 'pulse' | 'ripple' | 'signal' | 'lift';
+
+const NEAR_RADIUS = 190;
+/** Direct contact scales with the pixel grid, so hovering a block always lands. */
+const DIRECT_MIN = 14;
+const REACTION_COOLDOWN = 700;
+const NEIGHBOURS = 6;
+/** Loose blocks kept around the word; the rest of the pool parks invisible. */
+const AMBIENT_VISIBLE = 34;
+
+const REACTION_CLASS: Record<Reaction, string> = {
+  pulse: 'is-pulse',
+  ripple: 'is-ripple',
+  signal: 'is-signal',
+  lift: 'is-lift',
+};
+
+const REACTION_MS: Record<Reaction, number> = {
+  pulse: 620,
+  ripple: 760,
+  signal: 700,
+  lift: 460,
+};
+
+/** Cube edge as a share of one pixel cell, leaving the grid visible between blocks. */
+const CUBE_RATIO = 0.72;
+/** The cube box in CSS is 10px; --scale sizes it, so nothing touches layout. */
+const CUBE_BASE = 10;
+const MAX_CELL_WIDE = 22;
+const MAX_CELL_COMPACT = 13;
+
+const clamp = (n: number, min = 0, max = 1) => Math.min(max, Math.max(min, n));
+
+/**
+ * Drives the cube field.
+ *
+ * Two jobs: arrange the pool into a word, and run the protocol reactions under
+ * the pointer. Both write CSS custom properties straight to the elements —
+ * React never re-renders for either (INTERACTIONS.md §3, §11).
+ *
+ * Which word shows is decided by the caller, not by scroll position: the field
+ * runs on its own clock so the page scrolls normally past it.
+ */
+export function createFieldEngine(options: EngineOptions) {
+  const { stage, cubes, lines, field, compact, coarsePointer, reducedMotion } = options;
+
+  const poolSize = field.poolSize;
+
+  let width = 0;
+  let height = 0;
+  /* Cached stage offset: reading it per pointermove forces a reflow. */
+  let stageLeft = 0;
+  let stageTop = 0;
+  let activeWord = -1;
+  let directRadius = DIRECT_MIN;
+
+  const px = new Float32Array(poolSize);
+  const py = new Float32Array(poolSize);
+  const lit = new Uint8Array(poolSize);
+  const nearState = new Float32Array(poolSize);
+  const neighbours: number[][] = [];
+
+  const cooldown = new Map<number, number>();
+  const timers = new Set<number>();
+
+  let pointerX = -9999;
+  let pointerY = -9999;
+  let pointerInside = false;
+  let frame = 0;
+  let needsFrame = false;
+  let activeCube = -1;
+  let linePointer = 0;
+
+  const setVar = (element: HTMLElement, name: string, value: string) =>
+    element.style.setProperty(name, value);
+
+  const layoutFor = (index: number): PixelWord => {
+    const layout = field.layouts[index];
+    if (!layout) return { cols: 1, rows: 1, pixels: [] };
+    return compact ? layout.compact : layout.wide;
+  };
+
+  /** Where the word sits inside the stage, and how big one pixel is. */
+  function metricsFor(word: PixelWord) {
+    const maxCell = compact ? MAX_CELL_COMPACT : MAX_CELL_WIDE;
+    const maxWidth = width * (compact ? 0.88 : 0.74);
+    const maxHeight = height * (compact ? 0.72 : 0.84);
+    const cell = Math.max(
+      2,
+      Math.min(maxWidth / Math.max(word.cols, 1), maxHeight / Math.max(word.rows, 1), maxCell),
+    );
+    const artWidth = word.cols * cell;
+    const artHeight = word.rows * cell;
+
+    return {
+      cell,
+      originX: (width - artWidth) / 2,
+      originY: height * 0.5 - artHeight / 2,
+      artWidth,
+    };
+  }
+
+  function readStage() {
+    const rect = stage.getBoundingClientRect();
+    width = rect.width;
+    height = rect.height;
+    stageLeft = rect.left;
+    stageTop = rect.top;
+  }
+
+  /** Nearest cubes among the lit ones, for signal propagation. */
+  function computeNeighbours() {
+    neighbours.length = 0;
+    const active: number[] = [];
+    for (let i = 0; i < poolSize; i += 1) if (lit[i]) active.push(i);
+
+    for (let i = 0; i < poolSize; i += 1) {
+      if (!lit[i]) {
+        neighbours.push([]);
+        continue;
+      }
+      const scored = active
+        .filter((id) => id !== i)
+        .map((id) => {
+          const dx = (px[id] as number) - (px[i] as number);
+          const dy = (py[id] as number) - (py[i] as number);
+          return { id, d: dx * dx + dy * dy };
+        })
+        .sort((a, b) => a.d - b.d)
+        .slice(0, NEIGHBOURS)
+        .map((entry) => entry.id);
+      neighbours.push(scored);
+    }
+  }
+
+  function applyWord(index: number, force = false) {
+    if (index === activeWord && !force) return;
+    activeWord = index;
+
+    const layout = field.layouts[index];
+    const word = layoutFor(index);
+    const { cell, originX, originY, artWidth } = metricsFor(word);
+    const cubeSize = Math.max(3, cell * CUBE_RATIO);
+    directRadius = Math.max(DIRECT_MIN, cell * 0.75);
+    const kind = layout?.kind ?? 'block';
+
+    for (let i = 0; i < cubes.length; i += 1) {
+      const element = cubes[i];
+      if (!element) continue;
+      const pixel = word.pixels[i];
+
+      if (pixel) {
+        const x = originX + pixel.x * cell + (cell - cubeSize) / 2;
+        const y = originY + pixel.y * cell + (cell - cubeSize) / 2;
+        px[i] = x + cubeSize / 2;
+        py[i] = y + cubeSize / 2;
+        lit[i] = 1;
+
+        // Letters resolve left to right rather than all at once.
+        const delay = artWidth > 0 ? Math.round(((x - originX) / artWidth) * 320) : 0;
+        // A slow swell crosses the word on the diagonal. The phase is per pixel,
+        // so the surface undulates instead of every block rising together.
+        const phase =
+          (pixel.x / Math.max(word.cols, 1)) * 0.7 + (pixel.y / Math.max(word.rows, 1)) * 0.3;
+
+        setVar(element, '--x', `${x.toFixed(1)}px`);
+        setVar(element, '--y', `${y.toFixed(1)}px`);
+        setVar(element, '--scale', (cubeSize / CUBE_BASE).toFixed(3));
+        setVar(element, '--delay', `${delay}ms`);
+        setVar(element, '--wave-delay', `${-Math.round(phase * 5200)}ms`);
+        setVar(element, '--amp', `${(cubeSize * 0.4).toFixed(1)}px`);
+        setVar(element, '--depth', '1');
+        element.dataset.on = 'true';
+        element.dataset.kind = kind;
+        // Some blocks in the letterform sit a shade lighter, so the surface has
+        // grain instead of reading as one flat fill.
+        element.dataset.facet = field.accents.has(i) ? 'high' : 'base';
+      } else {
+        const spot = field.ambient[i];
+        if (!spot) continue;
+        // Only a thin halo of loose blocks stays visible. Without this cap a
+        // short word leaves most of the pool drifting and the letters get lost
+        // in the noise.
+        const surplus = i - word.pixels.length;
+        const visible = surplus < AMBIENT_VISIBLE;
+        const size = Math.max(3, cell * 0.44 * (0.45 + spot.depth * 0.75));
+        const x = spot.x * (width - size);
+        const y = spot.y * (height - size);
+        px[i] = x + size / 2;
+        py[i] = y + size / 2;
+        lit[i] = 0;
+
+        setVar(element, '--x', `${x.toFixed(1)}px`);
+        setVar(element, '--y', `${y.toFixed(1)}px`);
+        setVar(element, '--scale', (size / CUBE_BASE).toFixed(3));
+        setVar(element, '--delay', `${Math.round(spot.phase * 14)}ms`);
+        setVar(element, '--wave-delay', `${-Math.round(spot.phase * 380)}ms`);
+        setVar(element, '--amp', `${(size * 0.55).toFixed(1)}px`);
+        setVar(element, '--depth', spot.depth.toFixed(2));
+        element.dataset.on = visible ? 'false' : 'hidden';
+        // Green stays out of the letterforms; it only accents the drifting field.
+        element.dataset.kind = field.accents.has(i) ? 'signal' : 'block';
+        element.dataset.facet = 'base';
+      }
+
+      if (nearState[i] !== 0) {
+        nearState[i] = 0;
+        setVar(element, '--near', '0');
+      }
+    }
+
+    computeNeighbours();
+  }
+
+  function connect(from: number, tone: 'sui' | 'signal') {
+    const pool = neighbours[from] ?? [];
+    const wanted = 3 + Math.floor(Math.random() * 4); // 3–6 (INTERACTIONS.md §4)
+    let drawn = 0;
+
+    for (const target of pool) {
+      if (drawn >= wanted) break;
+      const line = lines[linePointer % lines.length];
+      linePointer += 1;
+      if (!line) continue;
+
+      line.setAttribute('x1', String(px[from]));
+      line.setAttribute('y1', String(py[from]));
+      line.setAttribute('x2', String(px[target]));
+      line.setAttribute('y2', String(py[target]));
+      line.dataset.tone = tone;
+      line.classList.remove('is-live');
+      void line.getBoundingClientRect();
+      line.classList.add('is-live');
+
+      const neighbour = cubes[target];
+      if (neighbour) {
+        neighbour.classList.add('is-connected');
+        const timer = window.setTimeout(() => {
+          neighbour.classList.remove('is-connected');
+          timers.delete(timer);
+        }, 520);
+        timers.add(timer);
+      }
+      drawn += 1;
+    }
+  }
+
+  /** One primary reaction, at most one secondary (INTERACTIONS.md §4). */
+  function react(index: number) {
+    if (!lit[index]) return;
+    const now = performance.now();
+    if (now - (cooldown.get(index) ?? 0) < REACTION_COOLDOWN) return;
+    cooldown.set(index, now);
+
+    const element = cubes[index];
+    if (!element) return;
+
+    const kind = element.dataset.kind;
+    const reaction: Reaction =
+      kind === 'sui' ? 'pulse' : kind === 'walrus' ? 'ripple' : kind === 'signal' ? 'signal' : 'lift';
+
+    element.classList.add(REACTION_CLASS[reaction]);
+    const timer = window.setTimeout(() => {
+      element.classList.remove(REACTION_CLASS[reaction]);
+      timers.delete(timer);
+      if (reaction === 'pulse' || reaction === 'ripple') {
+        const settled = reaction === 'pulse' ? 'is-resolved' : 'is-stored';
+        element.classList.add(settled);
+        const settleTimer = window.setTimeout(() => {
+          element.classList.remove(settled);
+          timers.delete(settleTimer);
+        }, 420);
+        timers.add(settleTimer);
+      }
+    }, REACTION_MS[reaction]);
+    timers.add(timer);
+
+    if (reaction === 'pulse') connect(index, 'sui');
+    if (reaction === 'signal') connect(index, 'signal');
+  }
+
+  function requestFrame() {
+    if (needsFrame) return;
+    needsFrame = true;
+    frame = window.requestAnimationFrame(tick);
+  }
+
+  function tick() {
+    needsFrame = false;
+    if (!pointerInside || coarsePointer) return;
+
+    let nearestId = -1;
+    let nearestDistance = Number.POSITIVE_INFINITY;
+
+    for (let i = 0; i < poolSize; i += 1) {
+      const distance = Math.hypot(pointerX - (px[i] as number), pointerY - (py[i] as number));
+      const near = distance > NEAR_RADIUS ? 0 : clamp(1 - distance / NEAR_RADIUS) ** 1.6;
+      const quantized = Math.round(near * 20) / 20;
+
+      if (quantized !== nearState[i]) {
+        nearState[i] = quantized;
+        const element = cubes[i];
+        if (element) setVar(element, '--near', String(quantized));
+      }
+
+      if (lit[i] && distance < nearestDistance) {
+        nearestDistance = distance;
+        nearestId = i;
+      }
+    }
+
+    if (nearestId >= 0 && nearestDistance < directRadius) {
+      if (nearestId !== activeCube) {
+        activeCube = nearestId;
+        react(nearestId);
+      }
+    } else {
+      activeCube = -1;
+    }
+
+    requestFrame();
+  }
+
+  /**
+   * Pointer is tracked on window while the field keeps `pointer-events: none`,
+   * so it can never swallow a click or a scroll gesture.
+   */
+  function onPointerMove(event: PointerEvent) {
+    if (event.pointerType === 'touch' || coarsePointer) return;
+    const x = event.clientX - stageLeft;
+    const y = event.clientY - stageTop;
+
+    if (x < 0 || y < 0 || x > width || y > height) {
+      if (pointerInside) onPointerLeave();
+      return;
+    }
+
+    pointerX = x;
+    pointerY = y;
+    pointerInside = true;
+    requestFrame();
+  }
+
+  function onPointerLeave() {
+    pointerInside = false;
+    activeCube = -1;
+    for (let i = 0; i < poolSize; i += 1) {
+      if (nearState[i] === 0) continue;
+      nearState[i] = 0;
+      const element = cubes[i];
+      if (element) setVar(element, '--near', '0');
+    }
+  }
+
+  /** Touch: one reaction, two neighbours, nothing that blocks the scroll. */
+  function onPointerDown(event: PointerEvent) {
+    if (event.pointerType !== 'touch') return;
+    readStage();
+    const x = event.clientX - stageLeft;
+    const y = event.clientY - stageTop;
+
+    let nearestId = -1;
+    let nearestDistance = Number.POSITIVE_INFINITY;
+    for (let i = 0; i < poolSize; i += 1) {
+      if (!lit[i]) continue;
+      const distance = Math.hypot(x - (px[i] as number), y - (py[i] as number));
+      if (distance < nearestDistance) {
+        nearestDistance = distance;
+        nearestId = i;
+      }
+    }
+    if (nearestId < 0 || nearestDistance > 120) return;
+
+    [nearestId, ...(neighbours[nearestId] ?? []).slice(0, 2)].forEach((id, position) => {
+      const element = cubes[id];
+      if (!element) return;
+      setVar(element, '--near', position === 0 ? '1' : '0.5');
+      const timer = window.setTimeout(() => {
+        setVar(element, '--near', '0');
+        timers.delete(timer);
+      }, 900);
+      timers.add(timer);
+    });
+
+    react(nearestId);
+  }
+
+  /** The stage scrolls with the page, so the cached offset follows it. */
+  let scrollQueued = false;
+  function onScroll() {
+    if (scrollQueued) return;
+    scrollQueued = true;
+    window.requestAnimationFrame(() => {
+      scrollQueued = false;
+      readStage();
+    });
+  }
+
+  let resizeTimer = 0;
+  function onResize() {
+    window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(() => {
+      readStage();
+      applyWord(activeWord < 0 ? 0 : activeWord, true);
+    }, 160);
+  }
+
+  readStage();
+  applyWord(0, true);
+
+  if (!coarsePointer && !reducedMotion) {
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
+    window.addEventListener('blur', onPointerLeave);
+  }
+  if (!reducedMotion) {
+    window.addEventListener('pointerdown', onPointerDown, { passive: true });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onResize, { passive: true });
+
+  return {
+    /** Called by the hero when its own clock — or the rail — picks a word. */
+    setWord(index: number) {
+      readStage();
+      applyWord(index);
+    },
+    destroy() {
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerdown', onPointerDown);
+      window.removeEventListener('blur', onPointerLeave);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onResize);
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(resizeTimer);
+      timers.forEach((timer) => window.clearTimeout(timer));
+      timers.clear();
+    },
+  };
+}

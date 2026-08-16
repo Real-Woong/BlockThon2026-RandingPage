@@ -1,0 +1,21 @@
+/* Sits above the CSS field, below the readability gradient and the content. */
+.scene {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  animation: crossfade 620ms var(--ease-out) forwards;
+}
+
+.scene :global(spline-viewer) {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes crossfade {
+  to {
+    opacity: 1;
+  }
+}

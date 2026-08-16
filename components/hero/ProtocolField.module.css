@@ -1,0 +1,322 @@
+/*
+ * Living Protocol Field — cube pixel art.
+ *
+ * Each lit pixel of the 5×7 font is one axonometric block: the element is the
+ * front face, ::before the top face, ::after the side face. Everything moves on
+ * transform and opacity only, so a whole word can rearrange without touching
+ * layout (INTERACTIONS.md §11).
+ *
+ * Written by the engine per cube: --x, --y, --scale, --delay, --depth, --near.
+ * The base box is 10px and --scale sizes it.
+ */
+/*
+ * A registered custom property so the swell can be interpolated inside calc().
+ * Without @property a custom prop jumps between keyframes instead of easing.
+ */
+@property --wave {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+
+.field {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  /* Never intercepts a click, a scroll or a CTA. */
+  pointer-events: none;
+}
+
+.cubes {
+  position: absolute;
+  inset: 0;
+}
+
+.cube {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 10px;
+  height: 10px;
+  --glow: var(--near, 0);
+  transform-origin: top left;
+  transform: translate3d(
+      var(--x, 0px),
+      calc(var(--y, 0px) - var(--glow) * 9px - var(--wave) * var(--amp, 3px))
+    , 0)
+    scale(calc(var(--scale, 1) * (1 + var(--wave) * 0.06)));
+  background: var(--face-front);
+  will-change: transform, opacity;
+}
+
+/* Top face. */
+.cube::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 100%;
+  width: 100%;
+  height: 50%;
+  background: var(--face-top);
+  transform: skewX(-45deg);
+  transform-origin: bottom left;
+}
+
+/* Side face. */
+.cube::after {
+  content: '';
+  position: absolute;
+  left: 100%;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background: var(--face-side);
+  transform: skewY(-45deg);
+  transform-origin: left top;
+}
+
+/* Blocks that spell the current word. */
+.cube[data-on='true'] {
+  opacity: calc(0.88 + var(--glow) * 0.12);
+  /* A slow swell travels the word on the diagonal (phase is per pixel). */
+  animation: swell 5.2s var(--ease-in-out) infinite;
+  animation-delay: var(--wave-delay, 0ms);
+  transition:
+    transform 760ms var(--ease-out) var(--delay, 0ms),
+    opacity 520ms linear var(--delay, 0ms),
+    background-color 200ms linear;
+}
+
+/* Blocks the current word does not need drift out into the surrounding field. */
+.cube[data-on='false'] {
+  opacity: calc(0.08 + var(--depth, 0) * 0.3);
+  transition:
+    transform 900ms var(--ease-out) var(--delay, 0ms),
+    opacity 640ms linear var(--delay, 0ms),
+    background-color 200ms linear;
+  animation: drift 13s var(--ease-in-out) infinite;
+  animation-delay: var(--delay, 0ms);
+}
+
+@keyframes swell {
+  0%,
+  100% {
+    --wave: 0;
+  }
+  50% {
+    --wave: 1;
+  }
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    opacity: calc((0.08 + var(--depth, 0) * 0.3) * 0.55);
+  }
+  50% {
+    opacity: calc(0.08 + var(--depth, 0) * 0.3);
+  }
+}
+
+/* Pool blocks the current word has no use for park out of sight. */
+.cube[data-on='hidden'] {
+  opacity: 0;
+  animation: none;
+  transition:
+    transform 900ms var(--ease-out) var(--delay, 0ms),
+    opacity 400ms linear;
+}
+
+/* Nothing shows until the engine has placed the pool. */
+.field:not([data-ready='true']) .cube {
+  opacity: 0;
+}
+
+/* --- Cube kinds ---------------------------------------------------------
+ * Faces are mixed from the brand tokens, so replacing #2848B8 with the
+ * official value updates the field too (DESIGN_SYSTEM.md §3).
+ */
+
+.cube[data-facet='high'] {
+  --facet-lift: 14%;
+}
+
+.cube[data-kind='block'] {
+  --face-front: color-mix(in srgb, #fff calc(var(--facet-lift, 0%) + var(--glow) * 50%), var(--brand-blue));
+  --face-top: color-mix(in srgb, #fff calc(var(--facet-lift, 0%) + var(--glow) * 50%), var(--electric-blue));
+  --face-side: color-mix(
+    in srgb,
+    #fff calc(var(--glow) * 30%),
+    color-mix(in srgb, var(--brand-blue) 42%, var(--canvas))
+  );
+}
+
+/* Execution reads brighter and harder. */
+.cube[data-kind='sui'] {
+  --face-front: color-mix(in srgb, #fff calc(var(--facet-lift, 0%) + var(--glow) * 55%), var(--electric-blue));
+  --face-top: color-mix(in srgb, #fff calc(24% + var(--glow) * 45%), var(--electric-blue));
+  --face-side: color-mix(
+    in srgb,
+    #fff calc(var(--glow) * 30%),
+    color-mix(in srgb, var(--electric-blue) 40%, var(--canvas))
+  );
+}
+
+/* Storage reads as a closed, denser material: value, not a second hue. */
+.cube[data-kind='walrus'] {
+  --face-front: color-mix(
+    in srgb,
+    #fff calc(var(--glow) * 45%),
+    color-mix(in srgb, var(--muted) 70%, var(--surface-raised))
+  );
+  --face-top: color-mix(
+    in srgb,
+    #fff calc(var(--glow) * 40%),
+    color-mix(in srgb, var(--text) 62%, var(--muted))
+  );
+  --face-side: color-mix(
+    in srgb,
+    #fff calc(var(--glow) * 25%),
+    color-mix(in srgb, var(--surface-raised) 82%, var(--canvas))
+  );
+}
+
+/* 5% of the pool. Green stays brief and small (DESIGN_SYSTEM.md §3). */
+.cube[data-kind='signal'] {
+  --face-front: color-mix(in srgb, #fff calc(var(--glow) * 40%), var(--signal-green));
+  --face-top: color-mix(in srgb, #fff calc(20% + var(--glow) * 40%), var(--signal-green));
+  --face-side: color-mix(in srgb, var(--signal-green) 44%, var(--canvas));
+}
+
+/* --- Reactions ---------------------------------------------------------- */
+
+.fx {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  border: 1px solid transparent;
+  pointer-events: none;
+}
+
+/* SUI — execution: one fast blue-white pulse, then a short resolved state. */
+.cube:global(.is-pulse) .fx {
+  background: rgba(240, 245, 255, 0.95);
+  animation: pulseOut 620ms var(--ease-out);
+}
+
+@keyframes pulseOut {
+  0% {
+    opacity: 0;
+  }
+  14% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.cube:global(.is-resolved) .fx {
+  opacity: 1;
+  border-color: color-mix(in srgb, var(--signal-green) 70%, transparent);
+  transition: opacity 420ms linear;
+}
+
+/* WALRUS — storage: light travels from the surface into the block. */
+.cube:global(.is-ripple) .fx {
+  border-color: rgba(226, 236, 255, 0.9);
+  animation: rippleIn 760ms var(--ease-out);
+}
+
+@keyframes rippleIn {
+  0% {
+    opacity: 0;
+    transform: scale(2.1);
+  }
+  22% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.15);
+  }
+}
+
+.cube:global(.is-stored) .fx {
+  opacity: 1;
+  background: radial-gradient(circle, rgba(190, 212, 255, 0.6), transparent 70%);
+  transition: opacity 420ms linear;
+}
+
+/* Signal cube — connection only. */
+.cube:global(.is-signal) .fx {
+  border-color: color-mix(in srgb, var(--signal-green) 85%, transparent);
+  animation: signalEdge 700ms var(--ease-out);
+}
+
+@keyframes signalEdge {
+  0% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* A neighbour receiving a signal brightens; it does not run its own reaction. */
+.cube:global(.is-connected) .fx {
+  opacity: 1;
+  background: rgba(180, 200, 255, 0.32);
+  transition: opacity 320ms linear;
+}
+
+/* A plain block answers with one short lift. */
+.cube:global(.is-lift) {
+  --glow: 0.55;
+}
+
+/* --- Connection lines --------------------------------------------------- */
+
+.lines {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+
+.line {
+  stroke: var(--electric-blue);
+  stroke-width: 1;
+  stroke-dasharray: 5 4;
+  opacity: 0;
+}
+
+.line[data-tone='signal'] {
+  stroke: var(--signal-green);
+}
+
+.line:global(.is-live) {
+  animation: travel 620ms var(--ease-out);
+}
+
+@keyframes travel {
+  0% {
+    opacity: 0;
+    stroke-dashoffset: 26;
+  }
+  22% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 0;
+    stroke-dashoffset: 0;
+  }
+}
+
+/* --- Reduced motion (INTERACTIONS.md §9) -------------------------------- */
+
+.field[data-static='true'] .cube {
+  transition: none;
+  animation: none;
+  --wave: 0;
+}

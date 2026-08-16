@@ -1,0 +1,832 @@
+/*
+ * Section layouts.
+ *
+ * Headings deliberately differ in size, weight and position from section to
+ * section, and each block has its own density (DESIGN_SYSTEM.md §4, §5).
+ */
+
+/* --- 01 Manifesto ------------------------------------------------------- */
+
+.manifesto {
+  display: grid;
+  gap: clamp(2.5rem, 6vw, 5rem);
+}
+
+.statement {
+  font-size: var(--display-l);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  max-width: 16ch;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.statementRow {
+  display: block;
+}
+
+.statementRow + .statementRow {
+  margin-left: clamp(0px, 4vw, 72px);
+  color: var(--muted);
+}
+
+.manifestoBody {
+  font-size: var(--body-l);
+  line-height: 1.7;
+  color: var(--muted);
+  max-width: 46ch;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.principles {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--hairline);
+}
+
+.principle {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr;
+  gap: 1rem;
+  align-items: baseline;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--hairline);
+  font-size: var(--body-l);
+  line-height: 1.5;
+}
+
+.principleIndex {
+  font-family: var(--font-mono);
+  font-size: var(--meta-s);
+  letter-spacing: 0.16em;
+  color: var(--electric-blue);
+}
+
+@media (min-width: 1120px) {
+  .manifesto {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+    grid-template-areas:
+      'statement statement'
+      'body principles';
+    column-gap: clamp(3rem, 7vw, 8rem);
+  }
+  .statement {
+    grid-area: statement;
+  }
+  .manifestoBody {
+    grid-area: body;
+  }
+  .principles {
+    grid-area: principles;
+  }
+}
+
+/* --- 02 Stack ----------------------------------------------------------- */
+
+.stack {
+  display: grid;
+  gap: clamp(2.5rem, 5vw, 4rem);
+}
+
+.stackHead {
+  display: grid;
+  gap: 1rem;
+}
+
+.stackTitle {
+  font-family: var(--font-display);
+  font-size: var(--heading-s);
+  letter-spacing: -0.03em;
+  color: var(--muted);
+}
+
+.stackIntro {
+  font-size: var(--body-l);
+  line-height: 1.6;
+  max-width: 40ch;
+}
+
+.diagram {
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  position: relative;
+}
+
+.layers {
+  display: grid;
+  border: 1px solid var(--hairline);
+}
+
+.layer + .layer {
+  border-top: 1px solid var(--hairline);
+}
+
+.layer {
+  display: grid;
+  gap: 0.75rem;
+  padding: clamp(1.25rem, 2.5vw, 2rem);
+}
+
+.layerKey {
+  font-family: var(--font-mono);
+  font-size: var(--meta-s);
+  letter-spacing: 0.2em;
+}
+
+.layer[data-layer='sui'] .layerKey {
+  color: var(--electric-blue);
+}
+
+.layer[data-layer='walrus'] .layerKey {
+  color: rgba(214, 226, 255, 0.9);
+}
+
+.layerRole {
+  font-size: var(--body);
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.output {
+  display: grid;
+  gap: 0.6rem;
+  padding: clamp(1.25rem, 2.5vw, 2rem);
+  border: 1px solid var(--electric-blue);
+  background: rgba(40, 72, 184, 0.12);
+}
+
+.outputKey {
+  font-family: var(--font-mono);
+  font-size: var(--meta-s);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--electric-blue);
+}
+
+.outputValue {
+  font-size: var(--body-l);
+  line-height: 1.5;
+}
+
+.modules {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--hairline);
+}
+
+.module {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.875rem 0;
+  border-bottom: 1px solid var(--hairline);
+  font-size: var(--body);
+  color: var(--muted);
+}
+
+.moduleNode {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border: 1px solid var(--electric-blue);
+}
+
+@media (min-width: 768px) {
+  .stackHead {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 8fr);
+    align-items: baseline;
+    gap: clamp(2rem, 5vw, 5rem);
+  }
+
+  .layers {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .layer + .layer {
+    border-top: 0;
+    border-left: 1px solid var(--hairline);
+  }
+
+  /* Both layers converge on the output. */
+  .diagram[data-has-output='true'] {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    align-items: stretch;
+  }
+
+  .diagram[data-has-output='true']::before {
+    content: '';
+    position: absolute;
+    left: calc(58.333% - clamp(1.5rem, 3vw, 2.5rem));
+    top: 50%;
+    width: clamp(1.5rem, 3vw, 2.5rem);
+    height: 1px;
+    background: var(--electric-blue);
+    opacity: 0.6;
+  }
+
+  .modules {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: clamp(2rem, 5vw, 4rem);
+  }
+}
+
+/* --- 03 Build path ------------------------------------------------------ */
+
+.program {
+  display: grid;
+  gap: clamp(2.5rem, 5vw, 4rem);
+}
+
+.programHead {
+  display: grid;
+  gap: 1rem;
+}
+
+.programTitle {
+  font-size: var(--heading);
+  letter-spacing: -0.04em;
+}
+
+.programIntro {
+  font-size: var(--body);
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.timeline {
+  display: grid;
+  gap: 0;
+  position: relative;
+}
+
+.phase {
+  position: relative;
+  display: grid;
+  gap: 0.5rem;
+  padding: 1.5rem 0 1.5rem 2rem;
+  border-top: 1px solid var(--hairline);
+}
+
+.phaseMarker {
+  position: absolute;
+  left: 0;
+  top: calc(1.5rem + 0.35em);
+  width: 9px;
+  height: 9px;
+  background: var(--electric-blue);
+}
+
+.phase:last-child {
+  border-bottom: 1px solid var(--hairline);
+}
+
+.phaseLabel {
+  font-family: var(--font-mono);
+  font-size: var(--meta-s);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--electric-blue);
+}
+
+.phaseDate {
+  font-family: var(--font-mono);
+  font-size: var(--meta);
+  color: var(--muted);
+}
+
+.phaseTitle {
+  font-size: var(--heading-s);
+  line-height: 1.25;
+}
+
+.phaseBody {
+  font-size: var(--body);
+  line-height: 1.7;
+  color: var(--muted);
+  max-width: 42ch;
+}
+
+@media (min-width: 768px) {
+  .programHead {
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    align-items: end;
+    gap: clamp(2rem, 5vw, 5rem);
+  }
+}
+
+@media (min-width: 1120px) {
+  /* Horizontal spine: the connection line from the stack becomes the timeline. */
+  .timeline {
+    grid-template-columns: repeat(var(--phase-count, 4), minmax(0, 1fr));
+    border-top: 1px solid var(--hairline);
+  }
+
+  .phase {
+    padding: 2.25rem clamp(1rem, 2vw, 2rem) 0 0;
+    border-top: 0;
+    border-left: 1px solid var(--hairline);
+    padding-left: clamp(1rem, 1.6vw, 1.5rem);
+  }
+
+  .phase:first-child {
+    border-left: 0;
+    padding-left: 0;
+  }
+
+  .phase:last-child {
+    border-bottom: 0;
+  }
+
+  .phaseMarker {
+    left: clamp(1rem, 1.6vw, 1.5rem);
+    top: -5px;
+  }
+
+  .phase:first-child .phaseMarker {
+    left: 0;
+  }
+}
+
+/* --- 04 Tracks ---------------------------------------------------------- */
+
+.tracks {
+  display: grid;
+  gap: clamp(2rem, 4vw, 3rem);
+}
+
+.tracksTitle {
+  font-family: var(--font-mono);
+  font-size: var(--meta-s);
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: right;
+}
+
+.trackLayout {
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 3rem);
+}
+
+.trackList {
+  display: grid;
+  border-top: 1px solid var(--hairline);
+}
+
+.trackTab {
+  display: grid;
+  grid-template-columns: 3rem 1fr 10px;
+  align-items: center;
+  gap: 1rem;
+  min-height: 56px;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--hairline);
+  text-align: left;
+  color: var(--muted);
+  transition: color var(--t-micro) var(--ease-out);
+}
+
+.trackTab[aria-selected='true'] {
+  color: var(--text);
+}
+
+.trackIndex {
+  font-family: var(--font-mono);
+  font-size: var(--meta-s);
+  letter-spacing: 0.14em;
+}
+
+.trackName {
+  font-size: var(--heading-s);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+/* Selection activates the node, it does not enlarge the row. */
+.trackNode {
+  width: 10px;
+  height: 10px;
+  border: 1px solid var(--hairline-strong);
+  transition:
+    background-color var(--t-micro) var(--ease-out),
+    border-color var(--t-micro) var(--ease-out);
+}
+
+.trackTab[aria-selected='true'] .trackNode {
+  background: var(--electric-blue);
+  border-color: var(--electric-blue);
+}
+
+.trackPanel {
+  display: grid;
+  min-width: 0;
+  gap: 1rem;
+  align-content: start;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--electric-blue);
+}
+
+.trackSummary {
+  font-size: var(--body-l);
+  line-height: 1.5;
+}
+
+.trackBody {
+  font-size: var(--body);
+  line-height: 1.75;
+  color: var(--muted);
+}
+
+@media (min-width: 1120px) {
+  .trackLayout {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+    column-gap: clamp(3rem, 6vw, 6rem);
+  }
+
+  .trackPanel {
+    padding-top: 1.5rem;
+  }
+}
+
+/* --- 05 Support --------------------------------------------------------- */
+
+.support {
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.supportTitle {
+  font-family: var(--font-mono);
+  font-size: var(--meta-s);
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.prize {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-size: var(--display-l);
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+}
+
+.prizeCurrency {
+  font-family: var(--font-mono);
+  font-size: var(--meta);
+  letter-spacing: 0.16em;
+  color: var(--muted);
+}
+
+.supportList {
+  display: grid;
+  border-top: 1px solid var(--hairline);
+}
+
+.supportRow {
+  display: grid;
+  gap: 0.25rem 2rem;
+  padding: 1.125rem 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.supportLabel {
+  font-size: var(--body-l);
+  line-height: 1.4;
+}
+
+.supportDetail {
+  margin: 0;
+  font-size: var(--body);
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.benefits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.benefit {
+  padding: 0.35rem 0.9rem;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-pill);
+  font-size: var(--meta);
+  color: var(--muted);
+}
+
+@media (min-width: 768px) {
+  .supportRow {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+    align-items: baseline;
+  }
+}
+
+/* --- 06 Criteria -------------------------------------------------------- */
+
+.criteria {
+  display: grid;
+  gap: clamp(2rem, 4vw, 3rem);
+}
+
+.criteriaTitle {
+  font-size: var(--heading);
+  letter-spacing: -0.04em;
+}
+
+.criteriaList {
+  display: grid;
+  border-top: 1px solid var(--hairline);
+}
+
+.criterion {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5rem 1.5rem;
+  align-items: start;
+  padding: clamp(1.25rem, 2.5vw, 2rem) 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.criterionIndex {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+  color: var(--muted);
+  opacity: 0.72;
+}
+
+.criterionBody {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.criterionTitle {
+  font-size: var(--heading-s);
+  line-height: 1.25;
+}
+
+.criterionText {
+  font-size: var(--body);
+  line-height: 1.7;
+  color: var(--muted);
+  max-width: 52ch;
+}
+
+.criterionWeight {
+  grid-column: 2;
+  font-family: var(--font-mono);
+  font-size: var(--meta-s);
+  letter-spacing: 0.16em;
+  color: var(--electric-blue);
+}
+
+@media (min-width: 768px) {
+  .criterion {
+    grid-template-columns: 5rem minmax(0, 1fr) 6rem;
+    align-items: baseline;
+  }
+
+  .criterionWeight {
+    grid-column: 3;
+    text-align: right;
+  }
+}
+
+/* --- 07 Proof ----------------------------------------------------------- */
+
+.proof {
+  display: grid;
+  gap: clamp(2.5rem, 5vw, 4rem);
+}
+
+.proofHead {
+  display: grid;
+  gap: 1rem;
+}
+
+.proofTitle {
+  font-size: var(--heading);
+  letter-spacing: -0.04em;
+}
+
+.proofIntro {
+  font-size: var(--body-l);
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.metrics {
+  display: grid;
+  border-block: 1px solid var(--hairline);
+}
+
+.metric {
+  display: grid;
+  gap: 0.35rem;
+  padding: clamp(1.25rem, 2.5vw, 2rem) 0;
+}
+
+.metricValue {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+}
+
+.metricLabel {
+  font-size: var(--body);
+  color: var(--text);
+}
+
+.metricSource {
+  font-family: var(--font-mono);
+  font-size: var(--meta-s);
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+.achievements {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.achievement {
+  position: relative;
+  padding-left: 1.5rem;
+  font-size: var(--body-l);
+  line-height: 1.5;
+}
+
+.achievement::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.65em;
+  width: 7px;
+  height: 7px;
+  background: var(--electric-blue);
+}
+
+.gallery {
+  display: grid;
+  gap: 1px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.galleryItem img {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+@media (min-width: 768px) {
+  .proofHead {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    align-items: end;
+    gap: clamp(2rem, 5vw, 5rem);
+  }
+
+  .metrics {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+
+  .metric {
+    padding-inline: clamp(1rem, 2vw, 2rem);
+    border-left: 1px solid var(--hairline);
+  }
+
+  .metric:first-child {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .gallery {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* --- 08 Partners -------------------------------------------------------- */
+
+.partners {
+  display: grid;
+  gap: clamp(2rem, 4vw, 3rem);
+}
+
+.partnersTitle {
+  font-family: var(--font-mono);
+  font-size: var(--meta-s);
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.partnerGroups {
+  display: grid;
+}
+
+/* --- 09 FAQ ------------------------------------------------------------- */
+
+.faq {
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.faqTitle {
+  font-size: var(--heading);
+  letter-spacing: -0.04em;
+}
+
+@media (min-width: 1120px) {
+  .faq {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 8fr);
+    column-gap: clamp(3rem, 7vw, 8rem);
+    align-items: start;
+  }
+}
+
+/* --- 10 Final CTA ------------------------------------------------------- */
+
+.final {
+  display: grid;
+  gap: clamp(1.75rem, 4vw, 3rem);
+  justify-items: start;
+}
+
+/* The scattered field, resolved: four blocks on one baseline. */
+.finalBlocks {
+  display: flex;
+  gap: 6px;
+}
+
+.finalBlocks span {
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--electric-blue);
+}
+
+.finalBlocks span:nth-child(2) {
+  background: rgba(77, 114, 255, 0.35);
+}
+
+.finalBlocks span:nth-child(3) {
+  background: var(--electric-blue);
+}
+
+.finalBlocks span:nth-child(4) {
+  border-color: var(--signal-green);
+}
+
+.finalMessage {
+  font-size: var(--display-l);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  max-width: 15ch;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.finalRow {
+  display: block;
+}
+
+.finalRow + .finalRow {
+  color: var(--muted);
+}
+
+.finalBody {
+  font-size: var(--body-l);
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.finalAction {
+  margin-top: clamp(0.5rem, 2vw, 1.5rem);
+}
+
+.finalContact {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-family: var(--font-mono);
+  font-size: var(--meta);
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.finalContact:hover {
+  color: var(--text);
+}
