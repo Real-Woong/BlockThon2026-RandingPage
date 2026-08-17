@@ -1,5 +1,4 @@
 import type { Partner } from '@/content/types';
-import { line } from '@/content';
 import { StatusLabel } from './StatusLabel';
 import styles from './ui.module.css';
 
@@ -17,8 +16,7 @@ type LogoGridProps = {
  * no logo file shows its name as type instead of an empty frame.
  */
 export function LogoGrid({ title, partners, tier }: LogoGridProps) {
-  const entries = partners.filter((partner) => line(partner.name) ?? line(partner.logoUrl));
-  if (entries.length === 0) return null;
+  if (partners.length === 0) return null;
 
   return (
     <section className={styles.logoGroup}>
@@ -26,24 +24,26 @@ export function LogoGrid({ title, partners, tier }: LogoGridProps) {
         <StatusLabel tone="quiet">{title}</StatusLabel>
       </header>
       <div className={styles.logoGrid} data-tier={tier}>
-        {entries.map((partner) => {
-          const name = line(partner.name);
-          const logo = line(partner.logoUrl);
-          const href = line(partner.websiteUrl);
-
-          const inner = logo ? (
+        {partners.map((partner, position) => {
+          const inner = partner.logoUrl ? (
             // eslint-disable-next-line @next/next/no-img-element -- partner artwork is supplied as an arbitrary external asset
-            <img src={logo} alt={line(partner.alt) ?? name ?? ''} loading="lazy" />
+            <img src={partner.logoUrl} alt={partner.alt || partner.name} loading="lazy" />
           ) : (
-            <span>{name}</span>
+            <span>{partner.name}</span>
           );
 
-          return href ? (
-            <a key={partner.id} className={styles.logoCell} href={href} target="_blank" rel="noreferrer noopener">
+          return partner.websiteUrl ? (
+            <a
+              key={position}
+              className={styles.logoCell}
+              href={partner.websiteUrl}
+              target="_blank"
+              rel="noreferrer noopener"
+            >
               {inner}
             </a>
           ) : (
-            <div key={partner.id} className={styles.logoCell}>
+            <div key={position} className={styles.logoCell}>
               {inner}
             </div>
           );

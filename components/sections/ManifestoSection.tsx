@@ -1,5 +1,5 @@
-import { content, line, lines, value } from '@/content';
-import { sectionId, sectionIndex, sectionVisibility } from '@/content/sections';
+import { content } from '@/content';
+import { ordinal, sectionId, sectionIndex, sectionVisibility } from '@/content/sections';
 import { SectionFrame } from '@/components/layout/SectionFrame';
 import styles from './sections.module.css';
 
@@ -12,18 +12,18 @@ import styles from './sections.module.css';
 export function ManifestoSection() {
   if (!sectionVisibility.manifesto) return null;
 
-  const about = value(content.about);
-  const statement = line(about?.statement);
-  const body = line(about?.body);
-  const principles = lines(about?.principles);
+  const { statement, body, principles } = content.about;
 
   return (
     <SectionFrame id={sectionId('manifesto')} index={sectionIndex('manifesto')} density="quiet" reveal="mask">
       <div className={styles.manifesto}>
         {statement && (
           <h2 className={`${styles.statement} u-kr`}>
-            {statement.split('\n').map((row) => (
-              <span key={row} className={styles.statementRow}>
+            {/* Keyed by position, not by text: two lines of a statement are
+                allowed to read the same, and a repeated string key would
+                collide. */}
+            {statement.split('\n').map((row, position) => (
+              <span key={position} className={styles.statementRow}>
                 {row}{' '}
               </span>
             ))}
@@ -35,10 +35,8 @@ export function ManifestoSection() {
         {principles.length > 0 && (
           <ol className={styles.principles}>
             {principles.map((principle, position) => (
-              <li key={principle} className={styles.principle}>
-                <span className={styles.principleIndex}>
-                  {String(position + 1).padStart(2, '0')}
-                </span>
+              <li key={position} className={styles.principle}>
+                <span className={styles.principleIndex}>{ordinal(position)}</span>
                 <span className="u-kr">{principle}</span>
               </li>
             ))}

@@ -1,4 +1,4 @@
-import { content, items, line, value } from '@/content';
+import { content } from '@/content';
 import { sectionId, sectionIndex, sectionVisibility } from '@/content/sections';
 import { SectionFrame } from '@/components/layout/SectionFrame';
 import styles from './sections.module.css';
@@ -13,9 +13,7 @@ import styles from './sections.module.css';
 export function BuildPathSection() {
   if (!sectionVisibility.program) return null;
 
-  const program = value(content.program);
-  const intro = line(program?.intro);
-  const phases = items(program?.phases);
+  const { intro, phases } = content.program;
 
   return (
     <SectionFrame
@@ -35,26 +33,15 @@ export function BuildPathSection() {
           {/* The spine draws across before the markers land, so the path reads
               as one run rather than four separate columns. */}
           <span className={styles.timelineSpine} aria-hidden="true" />
-          {phases.map((phase, position) => {
-            const label = line(phase.label);
-            const date = line(phase.date);
-            const title = line(phase.title);
-            const description = line(phase.description);
-
-            return (
-              <li
-                key={phase.id}
-                className={styles.phase}
-                style={{ '--i': position } as React.CSSProperties}
-              >
-                <span className={styles.phaseMarker} aria-hidden="true" />
-                {label && <span className={styles.phaseLabel}>{label}</span>}
-                {date && <span className={styles.phaseDate}>{date}</span>}
-                {title && <h3 className={`${styles.phaseTitle} u-kr`}>{title}</h3>}
-                {description && <p className={`${styles.phaseBody} u-kr`}>{description}</p>}
-              </li>
-            );
-          })}
+          {phases.map((phase, position) => (
+            <li key={position} className={styles.phase} style={{ '--i': position } as React.CSSProperties}>
+              <span className={styles.phaseMarker} aria-hidden="true" />
+              {phase.label && <span className={styles.phaseLabel}>{phase.label}</span>}
+              {phase.date && <span className={styles.phaseDate}>{phase.date}</span>}
+              {phase.title && <h3 className={`${styles.phaseTitle} u-kr`}>{phase.title}</h3>}
+              {phase.description && <p className={`${styles.phaseBody} u-kr`}>{phase.description}</p>}
+            </li>
+          ))}
         </ol>
       </div>
     </SectionFrame>

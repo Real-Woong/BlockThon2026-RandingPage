@@ -1,5 +1,5 @@
 import { brand } from '@/content/brand';
-import { action, content, line, value } from '@/content';
+import { applyUrl, content } from '@/content';
 import { heroFacts } from '@/content/sections';
 import { ActionLink } from '@/components/ui/ActionLink';
 import { StatusLabel } from '@/components/ui/StatusLabel';
@@ -10,18 +10,20 @@ import styles from './Hero.module.css';
  * Panel 00 — the hero copy.
  *
  * The cube field spells BLOCKBLOCK above this, so the type here stays at
- * caption scale rather than competing with it. Only the two confirmed brand
- * names and the creative direction are set; descriptor, headline, date,
- * location, format and CTA appear the moment they are confirmed and stay
- * absent until then (CONTENT.md §16).
+ * caption scale rather than competing with it. Only the two brand names are
+ * guaranteed; descriptor, headline, date, location, format and CTA appear the
+ * moment they are filled in and stay absent until then.
  */
 export function HeroContent() {
-  const hero = value(content.hero);
-  const descriptor = line(hero?.descriptor);
+  const { hero } = content;
   const facts = heroFacts();
-  const lead = line(hero?.headline) ?? descriptor;
-  const primary = action(hero?.primaryCtaLabel, hero?.primaryCtaUrl);
-  const secondary = action(hero?.secondaryCtaLabel, hero?.secondaryCtaUrl);
+  const lead = hero.headline || hero.descriptor;
+
+  // Tested on the data, not on the elements: ActionLink returns null on its own,
+  // but the JSX for it is always truthy, so the wrapper has to ask the content.
+  const primaryUrl = applyUrl(hero.primaryCtaUrl);
+  const hasPrimary = Boolean(hero.primaryCtaLabel && primaryUrl);
+  const hasSecondary = Boolean(hero.secondaryCtaLabel && hero.secondaryCtaUrl);
 
   return (
     <div className={styles.content}>
@@ -38,7 +40,6 @@ export function HeroContent() {
         <span className={styles.titleWord}>pixel</span>
       </h1>
 
-
       {/* pixel → block → connection → protocol → product (CLAUDE.md §1) */}
       <ol className={styles.narrative}>
         {brand.narrative.map((step) => (
@@ -52,20 +53,22 @@ export function HeroContent() {
           body copy belongs to the manifesto, not to the first screen. */}
       {lead && (
         <p className={`${styles.headline} u-kr`}>
-          {lead.split('\n').map((row) => (
-            <span key={row} className={styles.headlineRow}>
+          {lead.split('\n').map((row, position) => (
+            <span key={position} className={styles.headlineRow}>
               {row}{' '}
             </span>
           ))}
         </p>
       )}
 
-      {(primary || secondary) && (
+      {/* The wrapper carries a top margin, so it has to disappear with the
+          buttons — an empty flex row still pushes everything below it down. */}
+      {(hasPrimary || hasSecondary) && (
         <div className={styles.actions}>
-          <ActionLink label={primary?.label ?? null} url={primary?.url ?? null} variant="primary" />
+          <ActionLink label={hero.primaryCtaLabel} url={primaryUrl} variant="primary" />
           <ActionLink
-            label={secondary?.label ?? null}
-            url={secondary?.url ?? null}
+            label={hero.secondaryCtaLabel}
+            url={hero.secondaryCtaUrl}
             variant="secondary"
           />
         </div>
@@ -73,8 +76,8 @@ export function HeroContent() {
 
       {facts.length > 0 && (
         <dl className={styles.facts}>
-          {facts.map((fact) => (
-            <div key={fact} className={styles.fact}>
+          {facts.map((fact, position) => (
+            <div key={position} className={styles.fact}>
               <dd>{fact}</dd>
             </div>
           ))}

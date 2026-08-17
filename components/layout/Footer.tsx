@@ -1,14 +1,14 @@
 import { brand } from '@/content/brand';
-import { content, text } from '@/content';
+import { content } from '@/content';
 import { BrandMark } from '@/components/brand/BrandMark';
 import styles from './Footer.module.css';
 
 /**
- * Closing signature. Carries the two confirmed names and nothing else —
- * contact appears only when it is confirmed.
+ * Closing signature. Carries the two brand names and nothing else — contact
+ * appears only when it is filled in.
  */
 export function Footer() {
-  const contact = text(content.contact);
+  const { contact } = content;
 
   return (
     <footer className={styles.footer}>

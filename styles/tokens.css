@@ -42,7 +42,11 @@
 
   /* --- Grid and spacing (DESIGN_SYSTEM.md §5) --- */
   --max-width: 1440px;
-  --gutter: 20px;
+  /* Grows to clear a display cutout. Both insets are 0 in portrait and on every
+     desktop browser, so this is the plain gutter everywhere except a notched
+     phone held sideways — where 20px would put the first character under the
+     camera housing. */
+  --gutter: max(20px, env(safe-area-inset-left), env(safe-area-inset-right));
   /* Room kept clear on the right for the section index rail. The rail itself is
      ~62px wide from the viewport edge; this has to exceed that by enough to
      read as a margin, or right-aligned content lands against the numbers. */
@@ -77,7 +81,7 @@
 
 @media (min-width: 768px) {
   :root {
-    --gutter: 24px;
+    --gutter: max(24px, env(safe-area-inset-left), env(safe-area-inset-right));
     --header-height: 72px;
   }
 }
@@ -85,7 +89,7 @@
 @media (min-width: 1120px) {
   :root {
     --rail-space: 104px;
-    --gutter: 32px;
+    --gutter: max(32px, env(safe-area-inset-left), env(safe-area-inset-right));
     --header-height: 80px;
   }
 }

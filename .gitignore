@@ -57,6 +57,43 @@ Thumbs.db
 !.vscode/extensions.json
 !.vscode/settings.json
 
+# --- macOS sync noise -----------------------------------------------------
+# This checkout lives under ~/Desktop, which iCloud Drive syncs. Sync leaves
+# resource forks, offload placeholders and Finder metadata behind.
+._*
+.AppleDouble
+.LSOverride
+.Spotlight-V100
+.Trashes
+.fseventsd
+.TemporaryItems
+.DocumentRevisions-V100
+*.icloud
+# Custom folder icon — the real filename ends in a carriage return.
+Icon?
+
+# Numbered duplicates the sync leaves behind: "routes.d 2.ts",
+# "sections.module 3.css". This keeps them out of commits — it does not stop
+# them appearing. The copies that land in .next/ still break `tsc` with
+# duplicate-identifier errors and have to be cleared before a build:
+#
+#   find .next out -regex '.* [0-9]+\..*' -delete
+#
+# Scoped to code and build extensions on purpose: an asset legitimately named
+# "logo 2.png" or "poster 2.jpg" must still be committable.
+* [0-9].ts
+* [0-9].tsx
+* [0-9].js
+* [0-9].jsx
+* [0-9].mjs
+* [0-9].cjs
+* [0-9].css
+* [0-9].json
+* [0-9].jsonc
+* [0-9].html
+* [0-9].txt
+* [0-9].md
+
 # --- agent tooling --------------------------------------------------------
 # Shared .claude config stays tracked; only per-machine overrides are ignored.
 .claude/settings.local.json

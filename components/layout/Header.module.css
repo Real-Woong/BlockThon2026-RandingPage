@@ -60,10 +60,6 @@
   padding-inline: 1.1rem;
 }
 
-.nav ~ .cta {
-  margin-left: 0;
-}
-
 /* Sits on the header's own bottom rule, so it costs no extra height. */
 .progress {
   position: absolute;
@@ -102,5 +98,15 @@
 @media (min-width: 768px) {
   .nav {
     display: flex;
+  }
+
+  /*
+   * Only once the nav is actually laid out does it take over pushing the CTA
+   * right. Scoped to this breakpoint on purpose: `.nav` still matches a sibling
+   * selector while `display: none`, so zeroing this margin unconditionally left
+   * the CTA stranded beside the logo on every phone.
+   */
+  .nav ~ .cta {
+    margin-left: 0;
   }
 }

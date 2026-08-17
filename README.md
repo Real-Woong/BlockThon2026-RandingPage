@@ -20,14 +20,16 @@ npm run typecheck
 
 ## 콘텐츠
 
-- 모든 행사 콘텐츠는 [`content/landing-content.ts`](./content/landing-content.ts) 한 곳에 있다.
-- 값이 확정되면 해당 필드의 `state`를 `'confirmed'`로 바꾸고 `value`를 채운다.
-  그 순간 관련 섹션, navigation link, section index가 함께 나타난다.
-- 확정 전에는 `state: 'draft'`로 두고 값을 비워둔다. `TBD`, `미정`, `Coming soon`,
-  `$0`을 대신 넣지 않는다.
-- `content/dev-fixtures.ts`의 `[TOKEN]` 문자열은 개발 전용이다. 배포 데이터와 섞지 않는다.
-- `NEXT_PUBLIC_CONTENT_PREVIEW`는 배포 환경에서 반드시 비워둔다. 값이 있으면 상단에
-  프리뷰 배너가 항상 표시되고 CTA는 비활성 placeholder로 렌더링된다.
+- 확정된 행사 정보는 [`content/event.ts`](./content/event.ts) **한 파일**에 있다.
+- 규칙은 하나다. **값을 쓰면 공개되고, 비우면(`''`) 사라진다.** 상태 플래그는 없다.
+  값을 채우는 순간 관련 섹션, navigation link, section index가 함께 나타난다.
+- 확정 전에는 비워둔다. `TBD`, `미정`, `Coming soon`, `$0`을 대신 넣지 않는다.
+- [`content/mock.ts`](./content/mock.ts)는 레이아웃 확인용 가짜 데이터다. 실제 정보가
+  아니므로 고치지 말고, 실데이터가 다 들어가면 삭제한다.
+- `NEXT_PUBLIC_CONTENT_SOURCE`는 배포 환경에서 반드시 `real`이어야 한다. 비어 있으면
+  `mock`으로 동작해서 지어낸 날짜와 상금이 그대로 공개된다.
+
+자세한 규칙은 [`CONTENT.md`](./CONTENT.md).
 
 ## 교체 가능한 자산
 

@@ -1,43 +1,38 @@
-import { content, items, line, lines, list, value } from './index';
+import { content } from './index';
 
 /**
  * Which sections may exist at all.
  *
  * A section is visible only when the content it is made of exists. Nothing is
  * padded, no placeholder copy is substituted, and a hidden section leaves no
- * wrapper and no vertical gap behind (CONTENT.md §16).
+ * wrapper and no vertical gap behind.
  *
  * The section index rail and the header navigation both read from here, so a
  * hidden section can never leave a dangling link.
  */
-const about = value(content.about);
-const stack = value(content.stack);
-const program = value(content.program);
-const support = value(content.support);
-const proof = value(content.proof);
-const partners = value(content.partners);
-const finalCta = value(content.finalCta);
-const hero = value(content.hero);
+const { about, stack, program, support, proof, partners, faqs, finalCta, tracks, criteria } =
+  content;
 
 export const sectionVisibility = {
   // The hero always exists: the two brand names are confirmed.
   hero: true,
-  manifesto: Boolean(line(about?.statement) ?? line(about?.body)) || lines(about?.principles).length > 0,
+  manifesto: Boolean(about.statement || about.body || about.principles.length),
   stack: Boolean(
-    line(stack?.intro) ?? line(stack?.suiRole) ?? line(stack?.walrusRole) ?? line(stack?.output),
-  ) || lines(stack?.modules).length > 0,
-  program: items(program?.phases).length > 0,
-  tracks: list(content.tracks).length > 0,
-  support: Boolean(line(support?.totalPrize)) || items(support?.items).length > 0 || lines(support?.followUpBenefits).length > 0,
-  criteria: list(content.criteria).length > 0,
-  proof: items(proof?.metrics).length > 0 || lines(proof?.achievements).length > 0 || items(proof?.gallery).length > 0,
-  partners:
-    items(partners?.hosts).length > 0 ||
-    items(partners?.mainPartners).length > 0 ||
-    items(partners?.techPartners).length > 0 ||
-    items(partners?.communityPartners).length > 0,
-  faq: list(content.faqs).length > 0,
-  finalCta: Boolean(line(finalCta?.message) ?? line(finalCta?.body)) || Boolean(line(finalCta?.url) && line(finalCta?.label)),
+    stack.intro || stack.suiRole || stack.walrusRole || stack.output || stack.modules.length,
+  ),
+  program: program.phases.length > 0,
+  tracks: tracks.length > 0,
+  support: Boolean(support.totalPrize || support.items.length || support.followUpBenefits.length),
+  criteria: criteria.length > 0,
+  proof: Boolean(proof.metrics.length || proof.achievements.length || proof.gallery.length),
+  partners: Boolean(
+    partners.hosts.length ||
+      partners.mainPartners.length ||
+      partners.techPartners.length ||
+      partners.communityPartners.length,
+  ),
+  faq: faqs.length > 0,
+  finalCta: Boolean(finalCta.message || finalCta.body || (finalCta.label && finalCta.url)),
 } as const;
 
 export type SectionKey = keyof typeof sectionVisibility;
@@ -69,7 +64,8 @@ export function sectionId(key: SectionKey): string {
 
 /** Hero meta line: only the parts that are confirmed. */
 export function heroFacts(): string[] {
-  return [line(hero?.date), line(hero?.location), line(hero?.format)].filter(
-    (fact): fact is string => Boolean(fact),
-  );
+  return [content.hero.date, content.hero.location, content.hero.format].filter(Boolean);
 }
+
+/** Position-derived label, so authors never hand-number a list. */
+export const ordinal = (position: number): string => String(position + 1).padStart(2, '0');

@@ -1,4 +1,4 @@
-import { content, items, line, lines, value } from '@/content';
+import { content } from '@/content';
 import { sectionId, sectionIndex, sectionVisibility } from '@/content/sections';
 import { SectionFrame } from '@/components/layout/SectionFrame';
 import { CountUp } from '@/components/ui/CountUp';
@@ -8,17 +8,12 @@ import styles from './sections.module.css';
  * 07 — Proof / Previous edition.
  *
  * Numbers, short lines, curated images — no long history paragraph. A metric
- * without a confirmed value is not rendered, and no figure is ever estimated
- * (CONTENT.md §11).
+ * without a value is not rendered, and no figure is ever estimated.
  */
 export function ProofSection() {
   if (!sectionVisibility.proof) return null;
 
-  const proof = value(content.proof);
-  const intro = line(proof?.intro);
-  const metrics = items(proof?.metrics).filter((metric) => line(metric.value));
-  const achievements = lines(proof?.achievements);
-  const gallery = items(proof?.gallery).filter((image) => line(image.src));
+  const { intro, metrics, achievements, gallery } = content.proof;
 
   return (
     <SectionFrame
@@ -36,17 +31,13 @@ export function ProofSection() {
 
         {metrics.length > 0 && (
           <dl className={styles.metrics}>
-            {metrics.map((metric) => (
-              <div key={metric.id} className={styles.metric}>
+            {metrics.map((metric, position) => (
+              <div key={position} className={styles.metric}>
                 <dd className={styles.metricValue}>
-                  <CountUp value={line(metric.value) ?? ''} />
+                  <CountUp value={metric.value} />
                 </dd>
-                {line(metric.label) && (
-                  <dt className={`${styles.metricLabel} u-kr`}>{line(metric.label)}</dt>
-                )}
-                {line(metric.source) && (
-                  <p className={styles.metricSource}>{line(metric.source)}</p>
-                )}
+                {metric.label && <dt className={`${styles.metricLabel} u-kr`}>{metric.label}</dt>}
+                {metric.source && <p className={styles.metricSource}>{metric.source}</p>}
               </div>
             ))}
           </dl>
@@ -54,8 +45,8 @@ export function ProofSection() {
 
         {achievements.length > 0 && (
           <ul className={styles.achievements}>
-            {achievements.map((achievement) => (
-              <li key={achievement} className={`${styles.achievement} u-kr`}>
+            {achievements.map((achievement, position) => (
+              <li key={position} className={`${styles.achievement} u-kr`}>
                 {achievement}
               </li>
             ))}
@@ -64,10 +55,10 @@ export function ProofSection() {
 
         {gallery.length > 0 && (
           <ul className={styles.gallery}>
-            {gallery.map((image) => (
-              <li key={image.id} className={styles.galleryItem}>
+            {gallery.map((image, position) => (
+              <li key={position} className={styles.galleryItem}>
                 {/* eslint-disable-next-line @next/next/no-img-element -- gallery sources are arbitrary external assets */}
-                <img src={line(image.src) ?? ''} alt={line(image.alt) ?? ''} loading="lazy" />
+                <img src={image.src} alt={image.alt} loading="lazy" />
               </li>
             ))}
           </ul>

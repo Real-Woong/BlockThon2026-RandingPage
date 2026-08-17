@@ -1,5 +1,5 @@
 import { protocolLabels } from '@/content/brand';
-import { content, line, lines, value } from '@/content';
+import { content } from '@/content';
 import { sectionId, sectionIndex, sectionVisibility } from '@/content/sections';
 import { SectionFrame } from '@/components/layout/SectionFrame';
 import styles from './sections.module.css';
@@ -9,17 +9,12 @@ import styles from './sections.module.css';
  *
  * A node diagram, not a card set: the SUI layer and the WALRUS layer converge
  * on a single output (DESIGN_SYSTEM.md §7). Each layer renders only if its
- * role text is confirmed, and the connectors collapse with it.
+ * role text is filled in, and the connectors collapse with it.
  */
 export function StackSection() {
   if (!sectionVisibility.stack) return null;
 
-  const stack = value(content.stack);
-  const intro = line(stack?.intro);
-  const suiRole = line(stack?.suiRole);
-  const walrusRole = line(stack?.walrusRole);
-  const modules = lines(stack?.modules);
-  const output = line(stack?.output);
+  const { intro, suiRole, walrusRole, modules, output } = content.stack;
 
   return (
     <SectionFrame
@@ -63,8 +58,8 @@ export function StackSection() {
 
         {modules.length > 0 && (
           <ul className={styles.modules}>
-            {modules.map((module) => (
-              <li key={module} className={styles.module}>
+            {modules.map((module, position) => (
+              <li key={position} className={styles.module}>
                 <span className={styles.moduleNode} aria-hidden="true" />
                 <span className="u-kr">{module}</span>
               </li>

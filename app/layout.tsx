@@ -1,9 +1,9 @@
 import type { Metadata, Viewport } from 'next';
 import { brand } from '@/content/brand';
-import { content, line, value } from '@/content';
+import { content } from '@/content';
 import '@/styles/globals.css';
 
-const meta = value(content.metadata);
+const meta = content.metadata;
 
 /**
  * Title and description fall back to the two confirmed brand names. No event
@@ -11,16 +11,16 @@ const meta = value(content.metadata);
  * (CONTENT.md §15).
  */
 export const metadata: Metadata = {
-  title: line(meta?.title) ?? `${brand.creativeName} — ${brand.organizer}`,
-  description: line(meta?.description) ?? undefined,
+  title: meta.title || `${brand.creativeName} — ${brand.organizer}`,
+  description: meta.description || undefined,
   openGraph: {
-    title: line(meta?.title) ?? `${brand.creativeName} — ${brand.organizer}`,
-    description: line(meta?.description) ?? undefined,
-    images: line(meta?.ogImage) ? [line(meta?.ogImage) as string] : undefined,
-    locale: line(meta?.locale) ?? 'ko_KR',
+    title: meta.title || `${brand.creativeName} — ${brand.organizer}`,
+    description: meta.description || undefined,
+    images: meta.ogImage ? [meta.ogImage] : undefined,
+    locale: meta.locale || 'ko_KR',
     type: 'website',
   },
-  alternates: line(meta?.canonicalUrl) ? { canonical: line(meta?.canonicalUrl) as string } : undefined,
+  alternates: meta.canonicalUrl ? { canonical: meta.canonicalUrl } : undefined,
 };
 
 export const viewport: Viewport = {

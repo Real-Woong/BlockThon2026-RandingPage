@@ -1,4 +1,4 @@
-import { action, content, line, text, value } from '@/content';
+import { applyUrl, content } from '@/content';
 import { sectionId, sectionIndex, sectionVisibility } from '@/content/sections';
 import { SectionFrame } from '@/components/layout/SectionFrame';
 import { ActionLink } from '@/components/ui/ActionLink';
@@ -13,11 +13,9 @@ import styles from './sections.module.css';
 export function FinalCTASection() {
   if (!sectionVisibility.finalCta) return null;
 
-  const finalCta = value(content.finalCta);
-  const message = line(finalCta?.message);
-  const body = line(finalCta?.body);
-  const cta = action(finalCta?.label, line(finalCta?.url) ?? text(content.applyUrl));
-  const contact = line(finalCta?.contact) ?? text(content.contact);
+  const { message, body, label, url, contact } = content.finalCta;
+  const resolvedContact = contact || content.contact;
+  const ctaUrl = applyUrl(url);
 
   return (
     <SectionFrame id={sectionId('finalCta')} index={sectionIndex('finalCta')} density="focus" reveal="mask">
@@ -31,8 +29,8 @@ export function FinalCTASection() {
 
         {message && (
           <h2 className={`${styles.finalMessage} u-kr`}>
-            {message.split('\n').map((row) => (
-              <span key={row} className={styles.finalRow}>
+            {message.split('\n').map((row, position) => (
+              <span key={position} className={styles.finalRow}>
                 {row}{' '}
               </span>
             ))}
@@ -41,18 +39,19 @@ export function FinalCTASection() {
 
         {body && <p className={`${styles.finalBody} u-kr u-measure`}>{body}</p>}
 
-        {cta && (
+        {/* The wrapper carries a top margin, so it goes when the button goes. */}
+        {label && ctaUrl && (
           <div className={styles.finalAction}>
-            <ActionLink label={cta.label} url={cta.url} variant="primary" />
+            <ActionLink label={label} url={ctaUrl} variant="primary" />
           </div>
         )}
 
-        {contact && (
+        {resolvedContact && (
           <a
             className={styles.finalContact}
-            href={contact.includes('@') ? `mailto:${contact}` : contact}
+            href={resolvedContact.includes('@') ? `mailto:${resolvedContact}` : resolvedContact}
           >
-            {contact}
+            {resolvedContact}
           </a>
         )}
       </div>

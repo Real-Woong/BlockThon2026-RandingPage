@@ -65,6 +65,13 @@ svg {
   max-width: 100%;
 }
 
+/* The default grey flash on tap fights a page this dark; the components carry
+   their own pressed and focus states. */
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
 a {
   color: inherit;
   text-decoration: none;

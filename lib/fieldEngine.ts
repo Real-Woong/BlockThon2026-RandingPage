@@ -25,8 +25,16 @@ const NEAR_RADIUS = 190;
 const DIRECT_MIN = 14;
 const REACTION_COOLDOWN = 700;
 const NEIGHBOURS = 6;
-/** Loose blocks kept around the word; the rest of the pool parks invisible. */
-const AMBIENT_VISIBLE = 58;
+/**
+ * Loose blocks kept around the word; the rest of the pool parks invisible.
+ *
+ * Far fewer on a phone. Every visible ambient cube is an independently animated
+ * composited layer, and a narrow screen has neither the room to show them apart
+ * nor the GPU budget to run them — the parked ones cost nothing (`opacity: 0`,
+ * `animation: none`), so the cheapest optimisation here is simply showing less.
+ */
+const AMBIENT_VISIBLE_WIDE = 58;
+const AMBIENT_VISIBLE_COMPACT = 24;
 
 const REACTION_CLASS: Record<Reaction, string> = {
   pulse: 'is-pulse',
@@ -216,7 +224,7 @@ export function createFieldEngine(options: EngineOptions) {
         // short word leaves most of the pool drifting and the letters get lost
         // in the noise.
         const surplus = i - word.pixels.length;
-        const visible = surplus < AMBIENT_VISIBLE;
+        const visible = surplus < (compact ? AMBIENT_VISIBLE_COMPACT : AMBIENT_VISIBLE_WIDE);
         const size = Math.max(3, cell * 0.44 * (0.45 + spot.depth * 0.75));
         const x = spot.x * (width - size);
         const y = spot.y * (height - size);

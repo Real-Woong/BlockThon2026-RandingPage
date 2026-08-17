@@ -1,4 +1,4 @@
-import { content, items, value } from '@/content';
+import { content } from '@/content';
 import { sectionId, sectionIndex, sectionVisibility } from '@/content/sections';
 import { SectionFrame } from '@/components/layout/SectionFrame';
 import { LogoGrid } from '@/components/ui/LogoGrid';
@@ -8,21 +8,19 @@ import styles from './sections.module.css';
  * 08 — Partners.
  *
  * Tiers, an editorial grid, no marquee. Organisations under discussion stay
- * out until their entry is confirmed (CONTENT.md §12).
+ * out until they are filled in.
  */
 export function PartnersSection() {
   if (!sectionVisibility.partners) return null;
 
-  const partners = value(content.partners);
+  const { hosts, mainPartners, techPartners, communityPartners } = content.partners;
 
   const groups = [
-    { title: 'host', partners: items(partners?.hosts), tier: 'lead' as const },
-    { title: 'partners', partners: items(partners?.mainPartners), tier: 'lead' as const },
-    { title: 'tech', partners: items(partners?.techPartners), tier: 'support' as const },
-    { title: 'community', partners: items(partners?.communityPartners), tier: 'support' as const },
+    { title: 'host', partners: hosts, tier: 'lead' as const },
+    { title: 'partners', partners: mainPartners, tier: 'lead' as const },
+    { title: 'tech', partners: techPartners, tier: 'support' as const },
+    { title: 'community', partners: communityPartners, tier: 'support' as const },
   ].filter((group) => group.partners.length > 0);
-
-  if (groups.length === 0) return null;
 
   return (
     <SectionFrame id={sectionId('partners')} index={sectionIndex('partners')} density="open" reveal="depth">

@@ -1,9 +1,8 @@
-import { isStructurePreview } from '@/content';
 import styles from './ui.module.css';
 
 type ActionLinkProps = {
-  label: string | null;
-  url: string | null;
+  label: string;
+  url: string;
   variant?: 'primary' | 'secondary' | 'quiet';
   className?: string;
 };
@@ -12,29 +11,18 @@ type ActionLinkProps = {
  * A call to action, or nothing.
  *
  * Without both a label and a URL this renders null — no empty button, no
- * invented alternative action (CONTENT.md §16). In structure preview the
- * control renders as a focusable, explicitly disabled placeholder so the
- * layout can be checked without shipping a dead link.
+ * invented alternative action. That is what makes it safe to drop one of these
+ * into a layout before the apply form exists.
  */
 export function ActionLink({ label, url, variant = 'secondary', className }: ActionLinkProps) {
   if (!label || !url) return null;
-
-  const classNames = [styles.action, className].filter(Boolean).join(' ');
-
-  if (isStructurePreview) {
-    return (
-      <button type="button" className={classNames} data-variant={variant} aria-disabled="true">
-        {label}
-      </button>
-    );
-  }
 
   const external = /^https?:/i.test(url);
 
   return (
     <a
       href={url}
-      className={classNames}
+      className={[styles.action, className].filter(Boolean).join(' ')}
       data-variant={variant}
       {...(external ? { target: '_blank', rel: 'noreferrer noopener' } : {})}
     >

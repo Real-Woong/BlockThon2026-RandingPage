@@ -3,7 +3,7 @@
 이 파일은 프로젝트의 최상위 실행 지침이다. 구현을 시작하기 전에 아래 문서를 모두 읽는다.
 
 1. [`DESIGN_SYSTEM.md`](./DESIGN_SYSTEM.md) — 브랜드와 시각 시스템
-2. [`CONTENT.md`](./CONTENT.md) — 실제 콘텐츠 데이터와 공개 상태
+2. [`CONTENT.md`](./CONTENT.md) — 콘텐츠 규칙과 공개 상태 모델
 3. [`INTERACTIONS.md`](./INTERACTIONS.md) — Spline, hover, scroll, motion
 
 충돌 시 우선순위:
@@ -11,10 +11,15 @@
 ```text
 사용자의 최신 직접 지시
 → CLAUDE.md
-→ CONTENT.md의 confirmed 데이터
+→ content/event.ts에 채워진 값
+→ CONTENT.md의 규칙
 → DESIGN_SYSTEM.md
 → INTERACTIONS.md
 ```
+
+확정된 행사 정보는 전부 `content/event.ts` 한 파일에 있다. 값을 쓰면 화면에
+나오고, 비우면(`''`) 사라진다. 상태 플래그는 없다. 비어 있는 칸에 값을 지어내지
+않는다.
 
 ---
 
@@ -202,7 +207,8 @@ components/
     LogoGrid
     Accordion
 content/
-  landing-content
+  event
+  mock
 styles/
   tokens
   globals

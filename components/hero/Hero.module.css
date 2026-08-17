@@ -18,7 +18,9 @@
   flex-direction: column;
   justify-content: flex-end;
   padding-top: calc(var(--header-height) + 24px);
-  padding-bottom: clamp(56px, 8vh, 96px);
+  /* Clears the home indicator: the word rail is the last thing in the hero and
+     would otherwise sit under it on a gesture-nav phone. */
+  padding-bottom: calc(clamp(56px, 8vh, 96px) + env(safe-area-inset-bottom));
   overflow: hidden;
   isolation: isolate;
 }
