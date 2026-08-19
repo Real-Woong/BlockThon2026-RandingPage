@@ -70,6 +70,15 @@ export type FieldWord = {
 };
 
 export const fieldWords: FieldWord[] = [
+  // The logo itself, not the name re-set in the 7×9 font: symbol, wordmark and
+  // tagline traced from the artwork. First in the sequence, so the field opens
+  // on the mark and then unfolds into the stack that builds it.
+  {
+    id: 'blockthon',
+    text: 'BLOCKTHON',
+    shape: 'lockup',
+    kind: 'block',
+  },
   {
     id: 'blockblock',
     text: 'blockblock',
@@ -92,15 +101,6 @@ export const fieldWords: FieldWord[] = [
     compactLines: ['WALRUS'],
     kind: 'walrus',
     meaning: 'data · storage · memory',
-  },
-  // The logo itself, not the name re-set in the 7×9 font: symbol, wordmark and
-  // tagline traced from the artwork. Last in the sequence, so the field spells
-  // its way through the stack and then resolves into the mark.
-  {
-    id: 'blockthon',
-    text: 'BLOCKTHON',
-    shape: 'lockup',
-    kind: 'block',
   },
 ];
 
