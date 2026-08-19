@@ -54,10 +54,17 @@ export type FieldWord = {
   id: string;
   /** Rendered as text in the caption. */
   text: string;
-  /** Wide screens. */
-  lines: string[];
+  /** Wide screens. Omitted when `shape` supplies the artwork instead of type. */
+  lines?: string[];
   /** Narrow screens — long words break so the cubes stay large enough to read. */
-  compactLines: string[];
+  compactLines?: string[];
+  /**
+   * Draws artwork instead of letterforms. `lockup` is the blockthon logo traced
+   * onto the same cube lattice (lib/logoLockup.ts, generated from the PNG) — the
+   * block arrangement carrying the mark itself rather than the PNG being dropped
+   * on the page (DESIGN_SYSTEM.md §2).
+   */
+  shape?: 'lockup';
   kind: ProtocolKind;
   meaning?: string;
 };
@@ -86,11 +93,13 @@ export const fieldWords: FieldWord[] = [
     kind: 'walrus',
     meaning: 'data · storage · memory',
   },
+  // The logo itself, not the name re-set in the 7×9 font: symbol, wordmark and
+  // tagline traced from the artwork. Last in the sequence, so the field spells
+  // its way through the stack and then resolves into the mark.
   {
     id: 'blockthon',
     text: 'BLOCKTHON',
-    lines: ['BLOCKTHON'],
-    compactLines: ['BLOCK', 'THON'],
+    shape: 'lockup',
     kind: 'block',
   },
 ];

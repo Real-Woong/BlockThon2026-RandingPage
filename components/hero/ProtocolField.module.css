@@ -102,6 +102,21 @@
   transform-origin: left top;
 }
 
+/*
+ * Artwork holds still.
+ *
+ * The swell animates `--wave`, a registered custom property that feeds the
+ * transform, so every frame is a style recalculation per element on the main
+ * thread — no compositor shortcut. That is affordable for the couple of hundred
+ * cubes a word of type needs and fatal for the ~1,700 the logo lockup lights,
+ * where it drops the page to single-digit frames. The reading is right anyway:
+ * type breathes, a mark does not.
+ */
+.field[data-art='true'] .cube[data-on='true'] {
+  animation: none;
+  will-change: auto;
+}
+
 /* Blocks that spell the current word. */
 .cube[data-on='true'] {
   opacity: calc(0.88 + var(--glow) * 0.12);
@@ -150,10 +165,19 @@
   }
 }
 
-/* Pool blocks the current word has no use for park out of sight. */
+/*
+ * Pool blocks the current word has no use for park out of sight.
+ *
+ * `will-change` is dropped with them. The pool is sized by the largest word,
+ * and the logo lockup makes that ~1,775 — so a short word leaves well over a
+ * thousand blocks parked, and holding a compositor layer open for each one
+ * costs frames on every other word in the sequence. A parked block is not
+ * moving; it can be promoted again when it next has somewhere to go.
+ */
 .cube[data-on='hidden'] {
   opacity: 0;
   animation: none;
+  will-change: auto;
   transition:
     transform 900ms var(--ease-out) var(--delay, 0ms),
     opacity 400ms linear;

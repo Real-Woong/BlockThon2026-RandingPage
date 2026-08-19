@@ -34,11 +34,16 @@
  * copy into the lower edge of the band so the wordmark and the cubes occupy the
  * same ground. Kept small — the title grazes the base of the word, it does not
  * sit on top of the lit letterforms.
+ *
+ * The floor carries the band on a short viewport. Below roughly 820px of height
+ * the copy already fills the hero, so `flex: 1` has no free space left to hand
+ * out and `justify-content` does nothing — the floor is then the only thing
+ * holding the band open, and the only thing that moves `.shell` down.
  */
 .stage {
   position: relative;
   flex: 1 1 auto;
-  min-height: clamp(180px, 26svh, 380px);
+  min-height: clamp(230px, 32svh, 400px);
   margin-bottom: clamp(-2.25rem, -4vh, -0.75rem);
 }
 
@@ -333,7 +338,7 @@
 
 @media (min-width: 768px) {
   .stage {
-    min-height: clamp(220px, 30svh, 420px);
+    min-height: clamp(280px, 36svh, 460px);
   }
 
   .cue {

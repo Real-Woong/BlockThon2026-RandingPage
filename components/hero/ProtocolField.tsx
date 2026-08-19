@@ -27,18 +27,24 @@ type ProtocolFieldProps = {
  * The layer is decorative: aria-hidden, `pointer-events: none`, and every word
  * is also set as real text in the caption beside it.
  *
+ * The pool is only mounted once `useEnvironment` has measured, because its size
+ * depends on the answer: the logo lockup is 1,719 cubes wide and 632 narrow, and
+ * mounting before the media query resolves means a phone builds the wide pool
+ * and immediately discards two thirds of it. Nothing is visible before that
+ * point anyway — the fallback layer is what holds the frame.
+ *
  * The pool is split across two planes. Most cubes sit behind the copy; a handful
  * of the nearest ones paint in front of it, so the wordmark is inside the field
  * rather than stacked below a banner of it. Nothing in the front plane is ever
  * part of a letterform, and it never takes pointer events.
  */
 export function ProtocolField({ stageRef, activeWord }: ProtocolFieldProps) {
-  const field = useMemo(() => buildWordField(), []);
+  const { ready, reducedMotion, coarsePointer, compact } = useEnvironment();
+  const field = useMemo(() => buildWordField(compact), [compact]);
   const fieldRef = useRef<HTMLDivElement>(null);
   const cubeRefs = useRef<(HTMLDivElement | null)[]>([]);
   const lineRefs = useRef<(SVGLineElement | null)[]>([]);
   const engineRef = useRef<ReturnType<typeof createFieldEngine> | null>(null);
-  const { ready, reducedMotion, coarsePointer, compact } = useEnvironment();
 
   const planes = useMemo(() => {
     const back: number[] = [];
@@ -108,7 +114,7 @@ export function ProtocolField({ stageRef, activeWord }: ProtocolFieldProps) {
     >
       <SceneFallback />
 
-      <div className={styles.cubes}>{renderPlane(planes.back)}</div>
+      <div className={styles.cubes}>{ready && renderPlane(planes.back)}</div>
 
       <svg className={styles.lines} width="100%" height="100%" focusable="false">
         {Array.from({ length: LINE_POOL }, (_, index) => (
@@ -129,7 +135,7 @@ export function ProtocolField({ stageRef, activeWord }: ProtocolFieldProps) {
       <SplineScene />
 
       {/* Above the copy. Last in the DOM and z-indexed past the hero shell. */}
-      <div className={styles.cubesFront}>{renderPlane(planes.front)}</div>
+      <div className={styles.cubesFront}>{ready && renderPlane(planes.front)}</div>
     </div>
   );
 }

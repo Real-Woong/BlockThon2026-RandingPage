@@ -114,7 +114,13 @@ export function createFieldEngine(options: EngineOptions) {
     return compact ? layout.compact : layout.wide;
   };
 
-  /** Where the word sits inside the word band, and how big one pixel is. */
+  /**
+   * Where the word sits inside the word band, and how big one pixel is.
+   *
+   * Everything the band holds is a wide ribbon — type and the logo lockup alike
+   * — so width binds first and the art is the same height whatever resolution
+   * it was traced at. Nothing here needs a special case for artwork.
+   */
   function metricsFor(word: PixelWord) {
     const maxCell = compact ? MAX_CELL_COMPACT : MAX_CELL_WIDE;
     const maxWidth = wordWidth * (compact ? 0.88 : 0.74);
@@ -150,28 +156,88 @@ export function createFieldEngine(options: EngineOptions) {
     wordOffsetY = band.top - rect.top;
   }
 
-  /** Nearest cubes among the lit ones, for signal propagation. */
-  function computeNeighbours() {
+  /**
+   * Nearest cubes among the lit ones, for signal propagation.
+   *
+   * Bucketed rather than compared pairwise. A word of type lights a couple of
+   * hundred cubes and all-pairs was fine; the logo lockup lights ~1,700, where
+   * all-pairs is three million distance tests plus a full sort per cube and
+   * locks the main thread for seconds on every word change. A neighbour is
+   * always within a cube or two on the lattice, so bucketing by cell and
+   * reading a small patch around each cube finds the same six in linear time.
+   */
+  function computeNeighbours(cell: number) {
     neighbours.length = 0;
-    const active: number[] = [];
-    for (let i = 0; i < poolSize; i += 1) if (lit[i]) active.push(i);
+
+    const size = Math.max(cell, 8);
+    // Buckets are keyed by grid coordinate. The offset keeps the key positive
+    // and unique for any coordinate the field can produce.
+    const key = (gx: number, gy: number) => (gx + 4096) * 8192 + (gy + 4096);
+    const buckets = new Map<number, number[]>();
+
+    for (let i = 0; i < poolSize; i += 1) {
+      if (!lit[i]) continue;
+      const k = key(Math.floor((px[i] as number) / size), Math.floor((py[i] as number) / size));
+      const bucket = buckets.get(k);
+      if (bucket) bucket.push(i);
+      else buckets.set(k, [i]);
+    }
+
+    // Six best by insertion. Sorting every candidate was the other half of the
+    // old cost, and six is small enough that shifting beats comparing.
+    const bestId = new Int32Array(NEIGHBOURS);
+    const bestD = new Float64Array(NEIGHBOURS);
 
     for (let i = 0; i < poolSize; i += 1) {
       if (!lit[i]) {
         neighbours.push([]);
         continue;
       }
-      const scored = active
-        .filter((id) => id !== i)
-        .map((id) => {
-          const dx = (px[id] as number) - (px[i] as number);
-          const dy = (py[id] as number) - (py[i] as number);
-          return { id, d: dx * dx + dy * dy };
-        })
-        .sort((a, b) => a.d - b.d)
-        .slice(0, NEIGHBOURS)
-        .map((entry) => entry.id);
-      neighbours.push(scored);
+
+      const cx = Math.floor((px[i] as number) / size);
+      const cy = Math.floor((py[i] as number) / size);
+      let seen = 0;
+
+      // Widen until the patch holds enough. One ring covers the lattice; the
+      // rest is only reached by a cube that ended up on its own.
+      for (let ring = 1; ring <= 3; ring += 1) {
+        seen = 0;
+        bestD.fill(Infinity);
+
+        for (let gx = cx - ring; gx <= cx + ring; gx += 1) {
+          for (let gy = cy - ring; gy <= cy + ring; gy += 1) {
+            const bucket = buckets.get(key(gx, gy));
+            if (!bucket) continue;
+
+            for (const id of bucket) {
+              if (id === i) continue;
+              seen += 1;
+
+              const dx = (px[id] as number) - (px[i] as number);
+              const dy = (py[id] as number) - (py[i] as number);
+              const d = dx * dx + dy * dy;
+              if (d >= (bestD[NEIGHBOURS - 1] as number)) continue;
+
+              let slot = NEIGHBOURS - 1;
+              while (slot > 0 && (bestD[slot - 1] as number) > d) {
+                bestD[slot] = bestD[slot - 1] as number;
+                bestId[slot] = bestId[slot - 1] as number;
+                slot -= 1;
+              }
+              bestD[slot] = d;
+              bestId[slot] = id;
+            }
+          }
+        }
+
+        if (seen >= NEIGHBOURS) break;
+      }
+
+      const nearest: number[] = [];
+      for (let n = 0; n < NEIGHBOURS && bestD[n] !== Infinity; n += 1) {
+        nearest.push(bestId[n] as number);
+      }
+      neighbours.push(nearest);
     }
   }
 
@@ -185,6 +251,9 @@ export function createFieldEngine(options: EngineOptions) {
     const cubeSize = Math.max(3, cell * CUBE_RATIO);
     directRadius = Math.max(DIRECT_MIN, cell * 0.75);
     const kind = layout?.kind ?? 'block';
+    // Motion, not metrics: the swell is per-element main-thread work and the
+    // lockup lights an order of magnitude more cubes than a word does.
+    fieldEl.dataset.art = layout?.art ? 'true' : 'false';
 
     for (let i = 0; i < cubes.length; i += 1) {
       const element = cubes[i];
@@ -251,7 +320,7 @@ export function createFieldEngine(options: EngineOptions) {
       }
     }
 
-    computeNeighbours();
+    computeNeighbours(cell);
   }
 
   function connect(from: number, tone: 'sui' | 'signal') {

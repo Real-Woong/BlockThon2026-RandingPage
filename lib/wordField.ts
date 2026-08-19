@@ -1,5 +1,6 @@
 import { createRng } from './rng';
 import { renderWord, type PixelWord } from './pixelFont';
+import { renderLockup, renderLockupCompact } from './logoLockup';
 import { fieldWords, type FieldWord, type ProtocolKind } from '@/content/brand';
 
 export type WordLayout = {
@@ -7,6 +8,8 @@ export type WordLayout = {
   kind: ProtocolKind;
   wide: PixelWord;
   compact: PixelWord;
+  /** Traced artwork rather than type. Only motion cares; sizing does not. */
+  art?: boolean;
 };
 
 export type AmbientPoint = {
@@ -53,17 +56,34 @@ const FOREGROUND_COUNT = 12;
  * One pool serves every word: cubes travel between letterforms instead of being
  * created and destroyed, which is what makes the morph read as the same field
  * rearranging itself (INTERACTIONS.md §2).
+ *
+ * `compact` is not just which artwork to draw — it sizes the pool. The logo
+ * lockup needs 1,719 cubes at the wide resolution and 632 at the narrow one,
+ * and every cube is a mounted element whether it is lit or parked. Sizing the
+ * pool from the variant actually in use is what keeps a phone from mounting a
+ * thousand elements it will never show.
  */
-export function buildWordField(seed = 20260817): WordField {
-  const layouts: WordLayout[] = fieldWords.map((word) => ({
-    id: word.id,
-    kind: word.kind,
-    wide: renderWord(word.lines),
-    compact: renderWord(word.compactLines),
-  }));
+export function buildWordField(compact: boolean, seed = 20260817): WordField {
+  const layouts: WordLayout[] = fieldWords.map((word) => {
+    if (word.shape === 'lockup') {
+      return {
+        id: word.id,
+        kind: word.kind,
+        wide: renderLockup(),
+        compact: renderLockupCompact(),
+        art: true,
+      };
+    }
+    return {
+      id: word.id,
+      kind: word.kind,
+      wide: renderWord(word.lines ?? []),
+      compact: renderWord(word.compactLines ?? word.lines ?? []),
+    };
+  });
 
   const largest = layouts.reduce(
-    (max, layout) => Math.max(max, layout.wide.pixels.length, layout.compact.pixels.length),
+    (max, layout) => Math.max(max, (compact ? layout.compact : layout.wide).pixels.length),
     0,
   );
   const poolSize = largest + AMBIENT_SURPLUS;
