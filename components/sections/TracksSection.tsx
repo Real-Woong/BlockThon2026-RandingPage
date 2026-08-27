@@ -30,7 +30,7 @@ export function TracksSection() {
   return (
     <SectionFrame id={sectionId('tracks')} index={sectionIndex('tracks')} density="dense" reveal="crop">
       <div className={styles.tracks}>
-        <h2 className={styles.tracksTitle}>tracks</h2>
+        <h2 className={styles.tracksTitle}>who should join</h2>
 
         <div className={styles.trackLayout}>
           <div className={styles.trackList} role="tablist" aria-label="트랙 목록">

@@ -28,7 +28,7 @@ export function SupportSection() {
       tone="surface"
     >
       <div className={styles.support}>
-        <h2 className={styles.supportTitle}>support</h2>
+        <h2 className={styles.supportTitle}>prize &amp; benefits</h2>
 
         {totalPrize && (
           <p className={styles.prize}>

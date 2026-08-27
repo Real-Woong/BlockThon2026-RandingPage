@@ -10,10 +10,10 @@
 
 export const brand = {
   organizer: 'blockblock',
-  creativeName: 'block_block pixel',
+  creativeName: 'Blockthon 2026',
   concept: 'Living Protocol Field',
-  /** CLAUDE.md §1 — the narrative the whole page is built on. */
-  narrative: ['pixel', 'block', 'connection', 'protocol', 'product'] as const,
+  /** The chain under the hero title: what the event is built out of. */
+  narrative: ['ai', 'blockchain', 'sui', 'walrus', 'product'] as const,
 } as const;
 
 /**

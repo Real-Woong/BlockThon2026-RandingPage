@@ -26,8 +26,8 @@ npm run typecheck
 - 확정 전에는 비워둔다. `TBD`, `미정`, `Coming soon`, `$0`을 대신 넣지 않는다.
 - [`content/mock.ts`](./content/mock.ts)는 레이아웃 확인용 가짜 데이터다. 실제 정보가
   아니므로 고치지 말고, 실데이터가 다 들어가면 삭제한다.
-- `NEXT_PUBLIC_CONTENT_SOURCE`는 배포 환경에서 반드시 `real`이어야 한다. 비어 있으면
-  `mock`으로 동작해서 지어낸 날짜와 상금이 그대로 공개된다.
+- `NEXT_PUBLIC_CONTENT_SOURCE`의 기본값은 `real`이다. 레이아웃 확인용으로 가짜 데이터를
+  볼 때만 `mock`을 명시한다(`NEXT_PUBLIC_CONTENT_SOURCE=mock npm run dev`).
 
 자세한 규칙은 [`CONTENT.md`](./CONTENT.md).
 

@@ -33,14 +33,15 @@ export function HeroContent() {
         <span className={styles.organizer}>{brand.organizer}</span>
       </div>
 
-      {/* Two hand-set lines. The space keeps the accessible name intact:
-          "block_block pixel", not "block_blockpixel". */}
+      {/* Two hand-set words. The space keeps the accessible name intact:
+          "Blockthon 2026", not "Blockthon2026". The second word takes the
+          quiet weight, so the name reads before the year does. */}
       <h1 className={styles.title}>
-        <span className={styles.titleWord}>block_block</span>{' '}
-        <span className={styles.titleWord}>pixel</span>
+        <span className={styles.titleWord}>Blockthon</span>{' '}
+        <span className={styles.titleWord}>2026</span>
       </h1>
 
-      {/* pixel → block → connection → protocol → product (CLAUDE.md §1) */}
+      {/* ai → blockchain → sui → walrus → product */}
       <ol className={styles.narrative}>
         {brand.narrative.map((step) => (
           <li key={step} className={styles.narrativeStep}>

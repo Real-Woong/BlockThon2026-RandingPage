@@ -5,17 +5,20 @@ import type { EventContent } from './types';
 /**
  * Where the page gets its copy.
  *
- *   real — only what is filled in `content/event.ts`. Public deployments must
- *          run this.
- *   mock — placeholder copy so the full layout is visible (default today).
+ *   real — only what is filled in `content/event.ts` (the default). The event
+ *          is confirmed, so this is what every deploy renders.
+ *   mock — placeholder copy so the full layout is visible, including the
+ *          sections `event.ts` currently leaves empty.
  *          ⚠️ Not real event information. See content/mock.ts.
  *
- * Set with NEXT_PUBLIC_CONTENT_SOURCE.
+ * Set with NEXT_PUBLIC_CONTENT_SOURCE. Defaulting to `real` is deliberate:
+ * an unset variable on the build container used to publish invented dates and
+ * prizes, and the safe failure is now a missing section, not a false one.
  */
 export type ContentSource = 'real' | 'mock';
 
 export const contentSource: ContentSource =
-  process.env.NEXT_PUBLIC_CONTENT_SOURCE === 'real' ? 'real' : 'mock';
+  process.env.NEXT_PUBLIC_CONTENT_SOURCE === 'mock' ? 'mock' : 'real';
 
 /** True whenever the visible copy is placeholder rather than confirmed. */
 export const isPlaceholderContent = contentSource !== 'real';

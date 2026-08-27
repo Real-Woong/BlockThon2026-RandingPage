@@ -25,7 +25,7 @@ export function BuildPathSection() {
     >
       <div className={styles.program}>
         <header className={styles.programHead}>
-          <h2 className={styles.programTitle}>build path</h2>
+          <h2 className={styles.programTitle}>program timeline</h2>
           {intro && <p className={`${styles.programIntro} u-kr u-measure`}>{intro}</p>}
         </header>
 

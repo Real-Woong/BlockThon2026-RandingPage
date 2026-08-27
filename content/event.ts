@@ -32,143 +32,260 @@ import type { EventContent } from './types';
  *                          `\n` 으로 2줄  → 첫 줄 굵게, 둘째 줄 얇은 회색
  *
  * 화면에서 확인
- *   NEXT_PUBLIC_CONTENT_SOURCE=real npm run dev
+ *   npm run dev  (기본값이 real 입니다. mock 레이아웃은
+ *                 NEXT_PUBLIC_CONTENT_SOURCE=mock npm run dev)
+ *
+ * ⚠️ 아직 비어 있는 값 — 확정되면 여기만 채우면 됩니다
+ *   applyUrl   신청 폼 URL. 비어 있는 동안 헤더·히어로·최종 CTA의
+ *              신청 버튼이 전부 화면에서 빠집니다.
+ *   proof      지난 회차 집계값. 없으면 07 섹션 전체가 숨겨집니다.
  */
 export const event: EventContent = {
   // --- 기본 정보 -----------------------------------------------------------
-  // 아래 두 개만 확정값입니다. 브랜드 표기이므로 바꾸지 마세요.
   organizer: 'blockblock',
-  creativeName: 'block_block pixel',
+  creativeName: 'Blockthon 2026',
 
-  officialEventName: '', // 공식 행사명
-  descriptor: '', // 한 줄 성격 규정 (예: Sui · Walrus 해커톤)
-  valueProposition: '', // 한 줄 가치 제안
-  date: '', // 예: 2026.03.13 – 03.15
-  applicationPeriod: '', // 예: 2026.01.19 – 02.20
-  location: '', // 예: 서울 성수
-  format: '', // 예: 오프라인 3일 · 팀당 최대 4인
-  applyUrl: '', // 신청 폼 전체 URL. 비우면 모든 신청 버튼이 사라집니다
-  contact: '', // 문의 이메일
+  officialEventName: 'Blockthon 2026',
+  descriptor: 'AI × Blockchain 해커톤',
+  valueProposition: 'Where AI Gains Memory, Agency, and Ownership.',
+  date: '2026.08.29 – 09.19',
+  applicationPeriod: '', // 마감(09.14)만 확정. 시작일이 정해지면 채웁니다
+  location: 'ONLINE + SEOUL',
+  format: 'ONLINE PRELIMINARY + DEMO DAY',
+  applyUrl: '', // ⚠️ 신청 폼 전체 URL. 비우면 모든 신청 버튼이 사라집니다
+  contact: 'blockblock.yonsei@gmail.com',
 
   // --- 헤더 메뉴 -----------------------------------------------------------
   // href는 섹션 앵커입니다. 숨겨진 섹션을 가리키는 링크는 자동으로 빠집니다.
   // 쓸 수 있는 값: #top #about #stack #program #tracks #support
   //                #criteria #proof #partners #faq #apply
   navigation: [
-    // { label: 'ABOUT', href: '#about' },
+    { label: 'ABOUT', href: '#about' },
+    { label: 'STACK', href: '#stack' },
+    { label: 'PROGRAM', href: '#program' },
+    { label: 'JOIN', href: '#tracks' },
+    { label: 'FAQ', href: '#faq' },
   ],
 
   // --- 00 Hero -------------------------------------------------------------
-  // 큐브 필드가 이미 크게 block_block 을 쓰고 있으니 문구는 짧을수록 좋습니다.
   hero: {
-    presentedBy: '',
-    eventName: '',
+    presentedBy: 'blockblock',
+    eventName: 'Blockthon 2026',
     descriptor: '',
-    headline: '', // 2줄 권장: '첫 줄\n둘째 줄'
+    headline: 'Where AI Gains Memory,\nAgency, and Ownership.',
     body: '',
-    primaryCtaLabel: '', // 예: 참가 신청
+    primaryCtaLabel: '참가 신청',
     primaryCtaUrl: '', // 비우면 위 applyUrl 사용
-    secondaryCtaLabel: '', // 예: 프로그램 보기
-    secondaryCtaUrl: '',
-    date: '', // 히어로 하단 메타 줄. 채운 것만 이어 붙습니다
-    location: '',
-    format: '',
+    secondaryCtaLabel: '프로그램 보기',
+    secondaryCtaUrl: '#program',
+    date: '2026.08.29 – 09.19',
+    location: 'ONLINE + SEOUL',
+    format: 'ONLINE PRELIMINARY + DEMO DAY',
   },
 
   // --- 01 Manifesto --------------------------------------------------------
   about: {
-    statement: '', // 이 페이지에서 가장 큰 문장. 2줄 권장
-    body: '',
-    principles: [],
+    statement: '해커톤을 넘어\n생태계의 빌더로',
+    body: 'Blockthon 2026은 일회성 개발 행사에 머무르지 않습니다. AI 개발자와 예비 창업가가 Sui와 Walrus를 배우고 활용하며, 행사 이후에도 프로젝트를 발전시키고 Sui 생태계에서 지속적으로 빌딩할 수 있도록 지원합니다.',
+    principles: [
+      'AI와 블록체인의 접점에서 새로운 가능성을 발견한다',
+      '기술 교육과 멘토링을 통해 생태계의 빌더로 성장한다',
+      '우수 팀의 후속 개발과 글로벌 생태계 진출을 연결한다',
+    ],
   },
 
   // --- 02 Stack ------------------------------------------------------------
   stack: {
-    intro: '',
-    suiRole: '', // Sui가 담당하는 계층
-    walrusRole: '', // Walrus가 담당하는 계층
-    modules: [], // 실제로 다루는 기술 항목
-    output: '', // 3일 뒤 남는 결과물 한 줄 (강조 박스)
+    intro:
+      '익숙한 AI 기술에 Sui의 온체인 기능과 Walrus의 분산형 데이터 저장을 결합해보세요. 블록체인 경험이 많지 않아도 사전 세션과 기술 멘토링을 통해 필요한 스택을 배우며 개발할 수 있습니다.',
+    suiRole:
+      '빠른 트랜잭션과 디지털 자산의 소유권을 활용해 AI 서비스에 결제, 권한, 보상과 온체인 기능을 더할 수 있습니다.',
+    walrusRole:
+      'AI 모델, 미디어, 학습 데이터처럼 용량이 큰 데이터를 분산형 환경에 저장하고 서비스에서 활용할 수 있습니다.',
+    modules: [
+      '스스로 판단하고 거래하는 AI 에이전트',
+      '데이터의 소유권과 활용 범위를 직접 관리하는 AI 서비스',
+      '크리에이터와 사용자를 위한 온체인 결제·보상 시스템',
+      'Sui와 Walrus를 활용한 자유로운 AI × Blockchain 프로젝트',
+    ],
+    output: 'AI와 블록체인의 결합을 자유롭게 실험하고, 실제로 작동하는 프로젝트를 완성해보세요.',
   },
 
-  // --- 03 Build path -------------------------------------------------------
-  // 가로 타임라인. 축이 그려지고 마커가 순서대로 찍힙니다.
+  // --- 03 Program timeline -------------------------------------------------
   program: {
-    intro: '',
+    intro:
+      '약 2주간의 온라인 예선을 시작으로 기술 세션과 팀 빌딩, 오프라인 해커톤과 Demo Day까지 이어집니다.',
     phases: [
-      // { label: 'PRE', date: '02.28', title: '온라인 사전 세션', description: '' },
+      {
+        label: 'ONLINE PRELIMINARY',
+        date: '08.29 – 09.14',
+        title: '온라인 예선 해커톤',
+        description:
+          '약 2주간 팀별 프로젝트를 개발합니다. 개인 또는 최대 4인으로 참가할 수 있으며, 제출 프로젝트를 바탕으로 오프라인 본선 진출팀을 선정합니다.',
+      },
+      {
+        label: 'HACKER HOUSE',
+        date: '9월 초 · 일정 추후 공개',
+        title: '기술 온보딩 · 팀 빌딩',
+        description:
+          'Sui와 Walrus 기술을 실습 중심으로 배우고, 참가자 및 현업 빌더들과 교류하며 프로젝트와 팀을 구체화합니다.',
+      },
+      {
+        label: 'FINALIST ANNOUNCEMENT',
+        date: '09.16',
+        title: '본선 진출팀 발표',
+        description:
+          '온라인 예선 프로젝트 심사를 거쳐 오프라인 해커톤과 Demo Day에 참여할 본선 진출팀을 발표합니다.',
+      },
+      {
+        label: 'HACKATHON & DEMO DAY',
+        date: '09.19',
+        title: '오프라인 해커톤 · Demo Day',
+        description:
+          '프로젝트 개발과 기술 멘토링을 진행한 뒤, 최종 결과물을 발표하고 심사와 시상, 네트워킹을 함께합니다.',
+      },
     ],
   },
 
-  // --- 04 Tracks -----------------------------------------------------------
-  // 트랙명이 화면에서 가장 큰 타이포로 나옵니다. 짧게 쓰세요 (8~12자 권장).
+  // --- 04 Who should join --------------------------------------------------
   tracks: [
-    // { title: '', summary: '', description: '' },
+    {
+      title: 'AI RESEARCHERS & ENGINEERS',
+      summary: '연구와 기술을 실제 프로젝트로 발전시키고 싶은 분',
+      description:
+        'AI 모델과 에이전트, 데이터 기술을 연구하거나 개발하고 있으며, 블록체인과 결합한 새로운 활용 가능성을 직접 실험해보고 싶은 분에게 적합합니다.',
+    },
+    {
+      title: 'FOUNDERS & PRODUCT BUILDERS',
+      summary: '아이디어를 팀과 함께 구체화하고 검증하고 싶은 분',
+      description:
+        'AI 서비스를 개발하고 있는 예비 창업팀이나 기획자, 디자이너, 개발자라면 프로젝트를 고도화하고 현업 멘토의 피드백을 받을 수 있습니다.',
+    },
+    {
+      title: 'NEW TO WEB3',
+      summary: '개발 경험은 있지만 블록체인이 처음인 분',
+      description:
+        '블록체인 경험이 많지 않아도 참가할 수 있습니다. 사전 기술 세션과 멘토링을 통해 Sui와 Walrus를 배우며 프로젝트에 적용할 수 있습니다.',
+    },
   ],
 
-  // --- 05 Support ----------------------------------------------------------
+  // --- 05 Prize & benefits -------------------------------------------------
   // items 배열 순서가 곧 순위입니다. 1등을 맨 위에 두세요.
   support: {
-    totalPrize: '', // 숫자만. 예: 30,000,000
-    currency: '', // 예: KRW 총 상금
+    totalPrize: '1,800,000',
+    currency: 'KRW 총 상금',
     items: [
-      // { label: '대상 1팀', detail: '15,000,000 KRW · 후속 빌드 지원 연계' },
+      { label: '1위 · 1팀', detail: '1,000,000 KRW' },
+      { label: '2위 · 1팀', detail: '500,000 KRW' },
+      { label: '3위 · 1팀', detail: '300,000 KRW' },
     ],
-    followUpBenefits: [], // 상금 외 지원. 칩으로 표시됩니다
+    followUpBenefits: [
+      'Sui와 Walrus 기술 온보딩 및 개발 세션',
+      '프로젝트별 현업 전문가 기술 멘토링',
+      '수상팀 대상 후속 이벤트 참여 지원',
+    ],
   },
 
-  // --- 06 Criteria ---------------------------------------------------------
+  // --- 06 Judging criteria -------------------------------------------------
   // weight는 가로 막대로 그려집니다. 합이 100%가 되게 쓰세요.
   criteria: [
-    // { title: '동작', description: '', weight: '40%' },
+    {
+      title: '기술 구현 및 완성도',
+      description:
+        '핵심 기능이 안정적으로 작동하고, 프로젝트의 아이디어와 기술 구조를 데모를 통해 명확하게 보여주는지 평가합니다.',
+      weight: '30%',
+    },
+    {
+      title: 'Sui · Walrus 활용도',
+      description:
+        'Sui 또는 Walrus의 기술적 특성을 프로젝트에 적절히 활용하고, 해당 기술을 선택한 이유가 명확한지 평가합니다.',
+      weight: '25%',
+    },
+    {
+      title: 'AI × Blockchain 결합',
+      description:
+        'AI와 블록체인의 장점을 자연스럽게 결합해 기존 방식과 다른 경험이나 가치를 제시하는지 평가합니다.',
+      weight: '25%',
+    },
+    {
+      title: '문제 정의 및 발전 가능성',
+      description:
+        '해결하려는 문제와 대상 사용자가 명확하고, 해커톤 이후에도 프로젝트를 발전시킬 가능성이 있는지 평가합니다.',
+      weight: '20%',
+    },
   ],
 
   // --- 07 Proof ------------------------------------------------------------
   // ⚠️ 지난 회차의 실제 집계값만. 추정치나 반올림한 홍보 숫자를 넣지 마세요.
-  //    지난 회차가 없으면 이 블록을 전부 비워두면 섹션이 사라집니다.
+  //    지금은 비어 있으므로 07 섹션이 렌더링되지 않습니다.
   proof: {
     intro: '',
-    metrics: [
-      // { value: '180', label: '참가자', source: '2025 회차 집계' },
-    ],
-    achievements: [], // 검증 가능한 사실만
-    gallery: [], // { src: '/photo.jpg', alt: '대체 텍스트 필수' }
+    metrics: [],
+    achievements: [],
+    gallery: [],
   },
 
   // --- 08 Partners ---------------------------------------------------------
   // ⚠️ 로고 사용 허가를 받은 곳만. 논의 중인 곳은 넣지 마세요.
   //    logoUrl을 비우면 이름이 텍스트로 표시됩니다.
   partners: {
-    hosts: [
-      // { name: 'blockblock', logoUrl: '', websiteUrl: '', alt: '' },
+    hosts: [{ name: 'blockblock', logoUrl: '', websiteUrl: '', alt: '' }],
+    mainPartners: [
+      { name: 'Sui', logoUrl: '', websiteUrl: '', alt: '' },
+      { name: 'Walrus', logoUrl: '', websiteUrl: '', alt: '' },
     ],
-    mainPartners: [],
+    // Academy Partner는 아직 확정되지 않아 비워 둡니다.
     techPartners: [],
-    communityPartners: [],
+    // Media Partner 그룹입니다 (PartnersSection에서 `media`로 표기).
+    communityPartners: [{ name: '4 Pillars', logoUrl: '', websiteUrl: '', alt: '' }],
   },
 
   // --- 09 FAQ --------------------------------------------------------------
   // 첫 항목이 기본으로 펼쳐집니다. 가장 많이 물어볼 걸 맨 위에.
   faqs: [
-    // { question: '', answer: '' },
+    {
+      question: '블록체인 개발 경험이 없어도 참가할 수 있나요?',
+      answer:
+        '네. AI와 프로덕트 개발에 관심이 있다면 블록체인 경험이 많지 않아도 참가할 수 있습니다. Hacker House의 기술 세션과 프로젝트별 멘토링을 통해 Sui와 Walrus를 배우며 개발할 수 있습니다.',
+    },
+    {
+      question: '개인으로도 참가할 수 있나요?',
+      answer:
+        '네. 개인 또는 최대 4인으로 구성된 팀으로 참가할 수 있습니다. 팀 빌딩을 원하는 참가자는 Hacker House에서 다른 참가자들과 교류할 수 있습니다.',
+    },
+    {
+      question: '대회는 어떤 방식으로 진행되나요?',
+      answer:
+        '8월 29일부터 9월 14일까지 온라인 예선이 진행됩니다. 예선 프로젝트 심사를 통해 선정된 팀은 9월 19일 서울에서 열리는 오프라인 해커톤과 Demo Day에 참여합니다.',
+    },
+    {
+      question: '오프라인 본선에는 누구나 참여할 수 있나요?',
+      answer:
+        '프로젝트 발표에 참여하는 본선팀은 온라인 예선 심사를 통해 선정됩니다. 본선 진출팀은 9월 16일 발표할 예정입니다.',
+    },
+    {
+      question: '어떤 기술을 사용해야 하나요?',
+      answer:
+        'Sui 또는 Walrus의 기술을 활용한 AI × Blockchain 프로젝트를 제출해야 합니다. 구체적인 개발 가이드와 참고 자료는 참가자에게 별도로 안내할 예정입니다.',
+    },
   ],
 
   // --- 10 Final CTA --------------------------------------------------------
   finalCta: {
-    message: '', // 2줄 권장
-    body: '', // 마감일 등 실무 정보 한 줄
-    label: '',
+    message: 'AI와 블록체인의\n새로운 가능성에 도전하세요',
+    body: '개인 또는 최대 4인 팀으로 참가할 수 있습니다. 블록체인 경험이 많지 않아도 괜찮습니다. 참가 신청은 9월 14일에 마감됩니다.',
+    label: 'Blockthon 2026 참가 신청',
     url: '', // 비우면 위 applyUrl 사용
     contact: '', // 비우면 위 contact 사용
   },
 
   // --- SEO -----------------------------------------------------------------
-  // 날짜와 장소가 확정되기 전까지 Event 구조화 데이터는 만들지 않습니다.
   metadata: {
-    title: '', // 브라우저 탭 · 검색 결과 제목
-    description: '', // 검색 결과 설명 (150자 내외)
-    ogImage: '', // 공유 카드 이미지 전체 URL (1200×630 권장)
-    canonicalUrl: '', // 배포 도메인 전체 URL
+    title: 'Blockthon 2026 — blockblock',
+    description:
+      'Sui와 Walrus를 활용해 AI × Blockchain 프로젝트를 만드는 해커톤. 2026년 8월 29일 온라인 예선을 시작해 9월 19일 서울에서 오프라인 해커톤과 Demo Day로 마무리합니다.',
+    ogImage: '',
+    canonicalUrl: '',
     locale: 'ko_KR',
   },
 };

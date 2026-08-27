@@ -26,7 +26,7 @@ export function StackSection() {
     >
       <div className={styles.stack}>
         <header className={styles.stackHead}>
-          <h2 className={styles.stackTitle}>stack</h2>
+          <h2 className={styles.stackTitle}>Build with Sui &amp; Walrus</h2>
           {intro && <p className={`${styles.stackIntro} u-kr`}>{intro}</p>}
         </header>
 
@@ -49,7 +49,7 @@ export function StackSection() {
 
             {output && (
               <div className={styles.output}>
-                <span className={styles.outputKey}>output</span>
+                <span className={styles.outputKey}>what you can build</span>
                 <p className={`${styles.outputValue} u-kr`}>{output}</p>
               </div>
             )}
