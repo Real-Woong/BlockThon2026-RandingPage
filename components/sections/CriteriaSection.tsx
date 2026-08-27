@@ -30,7 +30,7 @@ export function CriteriaSection() {
       tone="field"
     >
       <div className={styles.criteria}>
-        <h2 className={styles.criteriaTitle}>judging criteria</h2>
+        <h2 className={styles.criteriaTitle}>JUDGING CRITERIA</h2>
 
         <ol className={styles.criteriaList}>
           {content.criteria.map((criterion, position) => {

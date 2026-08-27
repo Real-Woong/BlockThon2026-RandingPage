@@ -11,9 +11,11 @@
   padding: 0.2em;
 }
 
+/* The mark stacks BLOCK over BLOCK, so it needs roughly twice the height of a
+   single-line symbol before either row reads at header scale. */
 .symbol img {
   width: auto;
-  height: 1.6em;
+  height: 1.85em;
 }
 
 .wordmark {

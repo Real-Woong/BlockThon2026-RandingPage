@@ -57,7 +57,7 @@ export function Header() {
     <header className={styles.header} data-lifted={lifted}>
       <div className={styles.bar}>
         <a href="#top" className={styles.brand} aria-label="blockblock 홈">
-          <BrandMark variant="lockup" size="sm" />
+          <BrandMark variant="symbol" size="sm" />
         </a>
 
         {navItems.length > 0 && (

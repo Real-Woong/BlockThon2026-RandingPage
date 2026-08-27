@@ -17,19 +17,23 @@ export const brand = {
 } as const;
 
 /**
- * Temporary logo asset.
+ * The blockblock wordmark asset.
  *
- * The provided PNG is a reference asset, not the final mark. It is referenced
- * from exactly one place (components/brand/BrandMark.tsx) and nothing else in
- * the layout, grid, field geometry or interaction model derives from its shape.
+ * `public/blockblock-logo.png` is the supplied white-on-transparent mark
+ * cropped to its own edges — the original 1080×1080 export sits inside a large
+ * transparent square, which would shrink the mark to a few pixels wherever it
+ * is sized by height. Safe margin is applied in CSS instead, so the intrinsic
+ * ratio here is the artwork's own (BrandMark.module.css `.symbol`).
  *
- * Set `src` to null (or delete the file) and the page falls back to the
- * `blockblock` wordmark with no other change.
+ * Referenced from exactly one place (components/brand/BrandMark.tsx); nothing
+ * in the layout, grid, field geometry or interaction model derives from its
+ * shape. Set `src` to null and the page falls back to the `blockblock`
+ * wordmark set in type, with no other change.
  */
 export const brandMarkAsset: { src: string | null; width: number; height: number } = {
-  src: null,
-  width: 96,
-  height: 96,
+  src: '/blockblock-logo.png',
+  width: 722,
+  height: 270,
 };
 
 /**

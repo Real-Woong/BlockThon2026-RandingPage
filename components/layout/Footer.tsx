@@ -14,7 +14,7 @@ export function Footer() {
     <footer className={styles.footer}>
       <div className={styles.shell}>
         <div className={styles.mark}>
-          <BrandMark variant="lockup" size="md" />
+          <BrandMark variant="wordmark" size="md" />
           <span className={styles.creative}>{brand.creativeName}</span>
         </div>
 

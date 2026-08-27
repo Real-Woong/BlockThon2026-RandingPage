@@ -17,7 +17,7 @@ export function FAQSection() {
       tone="surface"
     >
       <div className={styles.faq}>
-        <h2 className={styles.faqTitle}>faq</h2>
+        <h2 className={styles.faqTitle}>FAQ</h2>
         <div className={styles.faqBody}>
           <Accordion entries={content.faqs} />
         </div>
