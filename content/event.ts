@@ -52,7 +52,8 @@ export const event: EventContent = {
   applicationPeriod: '', // 마감(09.14)만 확정. 시작일이 정해지면 채웁니다
   location: 'ONLINE + SEOUL',
   format: 'ONLINE PRELIMINARY + DEMO DAY',
-  applyUrl: '', // ⚠️ 신청 폼 전체 URL. 비우면 모든 신청 버튼이 사라집니다
+  applyUrl:
+    'https://docs.google.com/forms/d/e/1FAIpQLScFTQl0yyR3Bl86DInSi5CDFrCgyGdbA0zPulhV1am2ZqV-gQ/viewform?usp=header', // 신청 폼 전체 URL. 비우면 모든 신청 버튼이 사라집니다
   contact: 'blockblock.yonsei@gmail.com',
 
   // --- 헤더 메뉴 -----------------------------------------------------------
