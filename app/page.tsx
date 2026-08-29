@@ -5,6 +5,7 @@ import { PixelCursor } from '@/components/hero/PixelCursor';
 import { SectionIndex } from '@/components/ui/SectionIndex';
 import { ManifestoSection } from '@/components/sections/ManifestoSection';
 import { StackSection } from '@/components/sections/StackSection';
+import { ResourcesSection } from '@/components/sections/ResourcesSection';
 import { BuildPathSection } from '@/components/sections/BuildPathSection';
 import { TracksSection } from '@/components/sections/TracksSection';
 import { SupportSection } from '@/components/sections/SupportSection';
@@ -29,6 +30,7 @@ export default function Page() {
         <Hero />
         <ManifestoSection />
         <StackSection />
+        <ResourcesSection />
         <BuildPathSection />
         <TracksSection />
         <SupportSection />

@@ -122,14 +122,15 @@
 00 Hero / Signal
 01 Manifesto / About
 02 Ecosystem / Stack
-03 Program / Build Path
-04 Tracks
-05 Support / Rewards
-06 Criteria
-07 Proof / Previous Edition
-08 Partners
-09 FAQ
-10 Final Build / CTA
+03 Developer Resources
+04 Program / Build Path
+05 Tracks
+06 Support / Rewards
+07 Criteria
+08 Proof / Previous Edition
+09 Partners
+10 FAQ
+11 Final Build / CTA
 ```
 
 페이지 구조는 일반적인 행사 정보 흐름을 따르지만, 모든 섹션을 동일한 카드 모음으로 표현하지 않는다.
@@ -191,6 +192,7 @@ components/
   sections/
     ManifestoSection
     StackSection
+    ResourcesSection
     BuildPathSection
     TracksSection
     SupportSection

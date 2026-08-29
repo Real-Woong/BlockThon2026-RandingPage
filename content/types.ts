@@ -68,6 +68,26 @@ export type Faq = {
   answer: string;
 };
 
+export type ResourceLink = {
+  label: string;
+  /** The page itself. Empty drops the row: never publish a link that opens nothing. */
+  url: string;
+  /** One line on what the page is for. Optional. */
+  note: string;
+};
+
+export type ResourceGroup = {
+  /** The tool the links belong to, e.g. `Walrus Sites`. */
+  title: string;
+  summary: string;
+  links: ResourceLink[];
+};
+
+export type ResourcesContent = {
+  intro: string;
+  groups: ResourceGroup[];
+};
+
 export type HeroContent = {
   presentedBy: string;
   eventName: string;
@@ -166,6 +186,7 @@ export type EventContent = {
   hero: HeroContent;
   about: AboutContent;
   stack: StackContent;
+  resources: ResourcesContent;
   program: ProgramContent;
   tracks: Track[];
   support: SupportContent;

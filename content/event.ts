@@ -13,16 +13,17 @@ import type { EventContent } from './types';
  *   비워두면 알아서 숨겨집니다. 빈 상자나 이상한 여백은 남지 않습니다.
  *
  * 섹션이 나타나는 조건
- *   01 about     statement / body / principles 중 하나
- *   02 stack     intro / suiRole / walrusRole / output / modules 중 하나
- *   03 program   phases 1개 이상
- *   04 tracks    1개 이상
- *   05 support   totalPrize / items / followUpBenefits 중 하나
- *   06 criteria  1개 이상
- *   07 proof     metrics / achievements / gallery 중 하나
- *   08 partners  네 그룹 중 하나라도
- *   09 faqs      1개 이상
- *   10 finalCta  message / body, 또는 label+url 둘 다
+ *   01 about      statement / body / principles 중 하나
+ *   02 stack      intro / suiRole / walrusRole / output / modules 중 하나
+ *   03 resources  링크가 하나라도 살아 있는 그룹 1개 이상
+ *   04 program    phases 1개 이상
+ *   05 tracks     1개 이상
+ *   06 support    totalPrize / items / followUpBenefits 중 하나
+ *   07 criteria   1개 이상
+ *   08 proof      metrics / achievements / gallery 중 하나
+ *   09 partners   네 그룹 중 하나라도
+ *   10 faqs       1개 이상
+ *   11 finalCta   message / body, 또는 label+url 둘 다
  *
  * 형식이 중요한 값 (틀려도 안 깨지고, 효과만 빠집니다)
  *   criteria[].weight      `40%`         → 가중치 막대가 그려짐
@@ -38,7 +39,7 @@ import type { EventContent } from './types';
  * ⚠️ 아직 비어 있는 값 — 확정되면 여기만 채우면 됩니다
  *   applyUrl   신청 폼 URL. 비어 있는 동안 헤더·히어로·최종 CTA의
  *              신청 버튼이 전부 화면에서 빠집니다.
- *   proof      지난 회차 집계값. 없으면 07 섹션 전체가 숨겨집니다.
+ *   proof      지난 회차 집계값. 없으면 08 섹션 전체가 숨겨집니다.
  */
 export const event: EventContent = {
   // --- 기본 정보 -----------------------------------------------------------
@@ -58,11 +59,12 @@ export const event: EventContent = {
 
   // --- 헤더 메뉴 -----------------------------------------------------------
   // href는 섹션 앵커입니다. 숨겨진 섹션을 가리키는 링크는 자동으로 빠집니다.
-  // 쓸 수 있는 값: #top #about #stack #program #tracks #support
+  // 쓸 수 있는 값: #top #about #stack #resources #program #tracks #support
   //                #criteria #proof #partners #faq #apply
   navigation: [
     { label: 'ABOUT', href: '#about' },
     { label: 'STACK', href: '#stack' },
+    { label: 'RESOURCES', href: '#resources' },
     { label: 'PROGRAM', href: '#program' },
     { label: 'JOIN', href: '#tracks' },
     { label: 'FAQ', href: '#faq' },
@@ -112,7 +114,107 @@ export const event: EventContent = {
     output: 'AI와 블록체인의 결합을 자유롭게 실험하고, 실제로 작동하는 프로젝트를 완성해보세요.',
   },
 
-  // --- 03 Program timeline -------------------------------------------------
+  // --- 03 Developer resources ----------------------------------------------
+  // 공식 문서와 도구 링크입니다. 행사 정보가 아니라 참가자용 참고 자료이므로
+  // 확정을 기다릴 필요 없이 채우면 됩니다.
+  //
+  // ⚠️ 열리는 것을 확인한 URL만 넣으세요. url이 비면 그 줄이 사라지고,
+  //    링크가 하나도 남지 않은 그룹은 그룹째 사라집니다.
+  resources: {
+    intro:
+      'Sui와 Walrus로 개발할 때 필요한 공식 문서와 도구입니다. 블록체인이 처음이라면 Walrus의 Getting started부터 순서대로 따라가면 됩니다.',
+    groups: [
+      {
+        title: 'Walrus',
+        summary: 'blob을 저장하고 읽는 기본 레이어. 가장 먼저 볼 문서입니다.',
+        links: [
+          {
+            label: 'Getting started',
+            url: 'https://docs.wal.app/docs/getting-started',
+            note: '설치부터 첫 blob 저장까지',
+          },
+          {
+            label: 'CLI',
+            url: 'https://docs.wal.app/docs/walrus-client/walrus-cli',
+            note: 'walrus 클라이언트 명령어',
+          },
+          {
+            label: 'HTTP API',
+            url: 'https://docs.wal.app/docs/http-api/storing-blobs',
+            note: 'aggregator·publisher HTTP 인터페이스',
+          },
+          {
+            label: 'TypeScript SDK',
+            url: 'https://docs.wal.app/docs/typescript-sdk/sdks',
+            note: '앱에서 직접 저장하고 조회하기',
+          },
+          {
+            label: 'Public aggregators & publishers',
+            url: 'https://docs.wal.app/docs/system-overview/public-aggregators-and-publishers',
+            note: '직접 운영하지 않고 쓰는 공개 엔드포인트',
+          },
+        ],
+      },
+      {
+        title: 'Walrus Sites',
+        summary: '만든 결과물을 탈중앙 웹사이트로 배포합니다.',
+        links: [
+          {
+            label: 'Site builder 설치',
+            url: 'https://docs.wal.app/docs/sites/getting-started/installing-the-site-builder',
+            note: 'CLI 설치와 설정 파일',
+          },
+          {
+            label: '사이트 배포하기',
+            url: 'https://docs.wal.app/docs/sites/getting-started/publishing-your-first-site',
+            note: 'deploy 명령으로 첫 배포',
+          },
+        ],
+      },
+      {
+        title: 'Walrus Memory (MemWal)',
+        summary: 'AI 에이전트가 기억을 소유하고 이어서 쓰게 하는 메모리 레이어입니다.',
+        links: [
+          {
+            label: '문서',
+            url: 'https://docs.wal.app/walrus-memory',
+            note: '메모리 스페이스와 권한 모델',
+          },
+          {
+            label: 'Playground',
+            url: 'https://memory.walrus.xyz/',
+            note: '계정과 에이전트용 delegate key 발급',
+          },
+          {
+            label: 'GitHub',
+            url: 'https://github.com/MystenLabs/MemWal',
+            note: '샘플 앱과 skills',
+          },
+        ],
+      },
+      {
+        title: 'Seal',
+        summary: 'Walrus와 MemWal에 올린 데이터의 접근 권한을 온체인 정책으로 제어합니다.',
+        links: [
+          { label: '문서', url: 'https://seal-docs.wal.app/', note: '암호화와 접근 제어 정책' },
+          { label: 'GitHub', url: 'https://github.com/MystenLabs/seal', note: '' },
+        ],
+      },
+      {
+        title: 'Sui Stack Messaging',
+        summary: '저장과 복구는 Walrus, 프라이버시는 Seal을 쓰는 종단간 암호화 메시징 도구입니다.',
+        links: [
+          {
+            label: 'GitHub',
+            url: 'https://github.com/MystenLabs/sui-stack-messaging',
+            note: '메시징 도구와 예제',
+          },
+        ],
+      },
+    ],
+  },
+
+  // --- 04 Program timeline -------------------------------------------------
   program: {
     intro:
       '약 2주간의 온라인 예선을 시작으로 기술 세션과 팀 빌딩, 오프라인 해커톤과 Demo Day까지 이어집니다.',
@@ -148,7 +250,7 @@ export const event: EventContent = {
     ],
   },
 
-  // --- 04 Who should join --------------------------------------------------
+  // --- 05 Who should join --------------------------------------------------
   tracks: [
     {
       title: 'AI RESEARCHERS & ENGINEERS',
@@ -170,7 +272,7 @@ export const event: EventContent = {
     },
   ],
 
-  // --- 05 Prize & benefits -------------------------------------------------
+  // --- 06 Prize & benefits -------------------------------------------------
   // items 배열 순서가 곧 순위입니다. 1등을 맨 위에 두세요.
   support: {
     totalPrize: '1,800,000',
@@ -187,7 +289,7 @@ export const event: EventContent = {
     ],
   },
 
-  // --- 06 Judging criteria -------------------------------------------------
+  // --- 07 Judging criteria -------------------------------------------------
   // weight는 가로 막대로 그려집니다. 합이 100%가 되게 쓰세요.
   criteria: [
     {
@@ -216,9 +318,9 @@ export const event: EventContent = {
     },
   ],
 
-  // --- 07 Proof ------------------------------------------------------------
+  // --- 08 Proof ------------------------------------------------------------
   // ⚠️ 지난 회차의 실제 집계값만. 추정치나 반올림한 홍보 숫자를 넣지 마세요.
-  //    지금은 비어 있으므로 07 섹션이 렌더링되지 않습니다.
+  //    지금은 비어 있으므로 08 섹션이 렌더링되지 않습니다.
   proof: {
     intro: '',
     metrics: [],
@@ -226,7 +328,7 @@ export const event: EventContent = {
     gallery: [],
   },
 
-  // --- 08 Partners ---------------------------------------------------------
+  // --- 09 Partners ---------------------------------------------------------
   // ⚠️ 로고 사용 허가를 받은 곳만. 논의 중인 곳은 넣지 마세요.
   //    logoUrl을 비우면 이름이 텍스트로 표시됩니다.
   partners: {
@@ -246,7 +348,7 @@ export const event: EventContent = {
     communityPartners: [{ name: '4 Pillars', logoUrl: '', websiteUrl: '', alt: '' }],
   },
 
-  // --- 09 FAQ --------------------------------------------------------------
+  // --- 10 FAQ --------------------------------------------------------------
   // 첫 항목이 기본으로 펼쳐집니다. 가장 많이 물어볼 걸 맨 위에.
   faqs: [
     {
@@ -276,7 +378,7 @@ export const event: EventContent = {
     },
   ],
 
-  // --- 10 Final CTA --------------------------------------------------------
+  // --- 11 Final CTA --------------------------------------------------------
   finalCta: {
     message: 'AI와 블록체인의\n새로운 가능성에 도전하세요',
     body: '개인 또는 최대 4인 팀으로 참가할 수 있습니다. 블록체인 경험이 많지 않아도 괜찮습니다. 참가 신청은 9월 14일에 마감됩니다.',

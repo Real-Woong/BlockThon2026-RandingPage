@@ -10,8 +10,19 @@ import { content } from './index';
  * The section index rail and the header navigation both read from here, so a
  * hidden section can never leave a dangling link.
  */
-const { about, stack, program, support, proof, partners, faqs, finalCta, tracks, criteria } =
-  content;
+const {
+  about,
+  stack,
+  resources,
+  program,
+  support,
+  proof,
+  partners,
+  faqs,
+  finalCta,
+  tracks,
+  criteria,
+} = content;
 
 export const sectionVisibility = {
   // The hero always exists: the two brand names are confirmed.
@@ -20,6 +31,7 @@ export const sectionVisibility = {
   stack: Boolean(
     stack.intro || stack.suiRole || stack.walrusRole || stack.output || stack.modules.length,
   ),
+  resources: resources.groups.length > 0,
   program: program.phases.length > 0,
   tracks: tracks.length > 0,
   support: Boolean(support.totalPrize || support.items.length || support.followUpBenefits.length),
@@ -41,14 +53,15 @@ const SECTION_ORDER: { key: SectionKey; id: string; index: string }[] = [
   { key: 'hero', id: 'top', index: '00' },
   { key: 'manifesto', id: 'about', index: '01' },
   { key: 'stack', id: 'stack', index: '02' },
-  { key: 'program', id: 'program', index: '03' },
-  { key: 'tracks', id: 'tracks', index: '04' },
-  { key: 'support', id: 'support', index: '05' },
-  { key: 'criteria', id: 'criteria', index: '06' },
-  { key: 'proof', id: 'proof', index: '07' },
-  { key: 'partners', id: 'partners', index: '08' },
-  { key: 'faq', id: 'faq', index: '09' },
-  { key: 'finalCta', id: 'apply', index: '10' },
+  { key: 'resources', id: 'resources', index: '03' },
+  { key: 'program', id: 'program', index: '04' },
+  { key: 'tracks', id: 'tracks', index: '05' },
+  { key: 'support', id: 'support', index: '06' },
+  { key: 'criteria', id: 'criteria', index: '07' },
+  { key: 'proof', id: 'proof', index: '08' },
+  { key: 'partners', id: 'partners', index: '09' },
+  { key: 'faq', id: 'faq', index: '10' },
+  { key: 'finalCta', id: 'apply', index: '11' },
 ];
 
 export const visibleSections = SECTION_ORDER.filter((section) => sectionVisibility[section.key]);

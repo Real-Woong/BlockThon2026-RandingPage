@@ -74,6 +74,18 @@ function normalise(source: EventContent): EventContent {
       modules: source.stack.modules.map(clean).filter(Boolean),
     },
 
+    // A group with nothing to open is not a resource list: a link without a URL
+    // goes first, and a group left with no links goes with it.
+    resources: {
+      intro: clean(source.resources.intro),
+      groups: source.resources.groups
+        .map((group) => ({
+          ...strings({ title: group.title, summary: group.summary }),
+          links: group.links.map(strings).filter((link) => link.label && link.url),
+        }))
+        .filter((group) => group.links.length > 0),
+    },
+
     program: {
       intro: clean(source.program.intro),
       phases: source.program.phases.map(strings).filter((phase) => phase.title || phase.label),

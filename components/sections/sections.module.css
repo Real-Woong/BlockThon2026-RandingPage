@@ -239,7 +239,155 @@
   }
 }
 
-/* --- 03 Build path ------------------------------------------------------ */
+/* --- 03 Developer resources ---------------------------------------------
+   A documentation index: one ruled row per tool, name on the left, the pages
+   it opens listed on the right. No card, no panel, no radius — the rules are
+   what separate the groups, so the section reads as reference material rather
+   than as another set of tiles. */
+
+.resources {
+  display: grid;
+  gap: clamp(2rem, 4vw, 3rem);
+}
+
+.resourcesHead {
+  display: grid;
+  gap: 1rem;
+}
+
+.resourcesTitle {
+  font-family: var(--font-display);
+  font-size: var(--heading-s);
+  letter-spacing: -0.03em;
+  color: var(--muted);
+}
+
+.resourcesIntro {
+  font-size: var(--body-l);
+  font-weight: var(--w-quiet);
+  line-height: 1.6;
+  max-width: 44ch;
+}
+
+.resourceGroups {
+  display: grid;
+}
+
+.resourceGroup {
+  display: grid;
+  gap: 1rem;
+  padding-block: clamp(1.5rem, 3vw, 2.25rem);
+  border-top: 1px solid var(--hairline);
+}
+
+.resourceGroup:last-child {
+  border-bottom: 1px solid var(--hairline);
+}
+
+.resourceGroupTitle {
+  font-family: var(--font-mono);
+  font-size: var(--meta-s);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--electric-blue);
+}
+
+.resourceGroupSummary {
+  margin-top: 0.7rem;
+  font-size: var(--meta);
+  line-height: 1.65;
+  color: var(--muted);
+  max-width: 32ch;
+}
+
+.resourceLinks {
+  display: grid;
+}
+
+.resourceItem + .resourceItem {
+  border-top: 1px solid var(--hairline);
+}
+
+.resourceLink {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  column-gap: 1rem;
+  /* Comfortably over the 44px touch target once the row wraps to two lines. */
+  padding: 0.8rem 0;
+  color: var(--text);
+  transition: color var(--t-micro) var(--ease-out);
+}
+
+.resourceLabel {
+  font-size: var(--body);
+  line-height: 1.4;
+}
+
+.resourceNote {
+  grid-column: 1;
+  margin-top: 0.3rem;
+  font-size: var(--meta-s);
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.resourceMark {
+  grid-row: 1;
+  grid-column: 2;
+  font-family: var(--font-mono);
+  font-size: var(--meta);
+  color: var(--hairline-strong);
+  transition:
+    color var(--t-micro) var(--ease-out),
+    transform var(--t-micro) var(--ease-out);
+}
+
+/* Hover moves the mark, not the row: a list of twelve links that all slide
+   sideways reads as decoration. */
+.resourceLink:hover .resourceLabel {
+  color: var(--electric-blue);
+}
+
+.resourceLink:hover .resourceMark {
+  color: var(--electric-blue);
+  transform: translate(2px, -2px);
+}
+
+@media (min-width: 768px) {
+  .resourcesHead {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 8fr);
+    align-items: baseline;
+    gap: clamp(2rem, 5vw, 5rem);
+  }
+
+  .resourceGroup {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 8fr);
+    align-items: start;
+    gap: clamp(2rem, 5vw, 5rem);
+  }
+
+  .resourceLink {
+    grid-template-columns: minmax(0, 1fr) minmax(0, auto) 1.5rem;
+    column-gap: 2rem;
+  }
+
+  /* Wide enough to sit the note beside the label instead of under it, which
+     keeps a five-link group from running as tall as the head beside it. */
+  .resourceNote {
+    grid-row: 1;
+    grid-column: 2;
+    margin-top: 0;
+    text-align: right;
+  }
+
+  .resourceMark {
+    grid-column: 3;
+    text-align: right;
+  }
+}
+
+/* --- 04 Build path ------------------------------------------------------ */
 
 .program {
   display: grid;
@@ -410,7 +558,7 @@
   }
 }
 
-/* --- 04 Tracks ---------------------------------------------------------- */
+/* --- 05 Tracks ---------------------------------------------------------- */
 
 .tracks {
   display: grid;
@@ -522,7 +670,7 @@
   }
 }
 
-/* --- 05 Support --------------------------------------------------------- */
+/* --- 06 Support --------------------------------------------------------- */
 
 .support {
   display: grid;
@@ -616,7 +764,7 @@
   }
 }
 
-/* --- 06 Criteria -------------------------------------------------------- */
+/* --- 07 Criteria -------------------------------------------------------- */
 
 .criteria {
   display: grid;
@@ -731,7 +879,7 @@
 }
 
 
-/* --- 07 Proof ----------------------------------------------------------- */
+/* --- 08 Proof ----------------------------------------------------------- */
 
 .proof {
   display: grid;
@@ -849,7 +997,7 @@
   }
 }
 
-/* --- 08 Partners -------------------------------------------------------- */
+/* --- 09 Partners -------------------------------------------------------- */
 
 .partners {
   display: grid;
@@ -869,7 +1017,7 @@
   display: grid;
 }
 
-/* --- 09 FAQ ------------------------------------------------------------- */
+/* --- 10 FAQ ------------------------------------------------------------- */
 
 .faq {
   display: grid;
@@ -890,7 +1038,7 @@
   }
 }
 
-/* --- 10 Final CTA ------------------------------------------------------- */
+/* --- 11 Final CTA ------------------------------------------------------- */
 
 .final {
   display: grid;

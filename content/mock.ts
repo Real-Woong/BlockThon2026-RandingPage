@@ -70,6 +70,29 @@ export const mock: EventContent = {
     output: '3일 뒤 배포된 데모와 공개 저장소',
   },
 
+  resources: {
+    intro: '개발에 필요한 공식 문서와 도구입니다.',
+    groups: [
+      {
+        title: 'Walrus',
+        summary: 'blob을 저장하고 읽는 기본 레이어.',
+        links: [
+          {
+            label: 'Getting started',
+            url: 'https://docs.wal.app/docs/getting-started',
+            note: '설치부터 첫 blob 저장까지',
+          },
+          { label: 'CLI', url: 'https://docs.wal.app/docs/walrus-client/walrus-cli', note: '' },
+        ],
+      },
+      {
+        title: 'Seal',
+        summary: '접근 권한을 온체인 정책으로 제어합니다.',
+        links: [{ label: '문서', url: 'https://seal-docs.wal.app/', note: '암호화와 접근 제어' }],
+      },
+    ],
+  },
+
   program: {
     intro: '사전 세션에서 스택을 익히고, 본 행사 3일 동안 만들고, 마지막 날 데모로 마칩니다.',
     phases: [
