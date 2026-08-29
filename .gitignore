@@ -98,3 +98,8 @@ Icon?
 # Shared .claude config stays tracked; only per-machine overrides are ignored.
 .claude/settings.local.json
 .claude/.cc-writes/
+
+# --- 로컬 참고 자료 --------------------------------------------------------
+# Notion에서 내보낸 기획 문서 묶음. 확정된 문구는 content/event.ts와
+# EVENT.md에 반영되므로, 원본 export는 저장소에 올리지 않고 로컬에만 둔다.
+랜딩페이지_수정내용/
