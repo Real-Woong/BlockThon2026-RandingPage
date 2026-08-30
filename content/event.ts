@@ -50,8 +50,7 @@ export const event: EventContent = {
   applicationPeriod: '', // 신청 접수 기간. 09.14는 프로젝트 제출 마감이지 신청 마감이 아닙니다
   location: 'ONLINE + SEOUL',
   format: 'ONLINE PRELIMINARY + DEMO DAY',
-  applyUrl:
-    'https://docs.google.com/forms/d/e/1FAIpQLScFTQl0yyR3Bl86DInSi5CDFrCgyGdbA0zPulhV1am2ZqV-gQ/viewform?usp=header', // 신청 폼 전체 URL. 비우면 모든 신청 버튼이 사라집니다
+  applyUrl: 'https://luma.com/761rbhun', // 신청 폼 전체 URL. 비우면 모든 신청 버튼이 사라집니다
   contact: 'blockblock.yonsei@gmail.com',
 
   // --- 헤더 메뉴 -----------------------------------------------------------
