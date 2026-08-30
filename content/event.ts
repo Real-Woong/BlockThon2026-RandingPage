@@ -50,7 +50,7 @@ export const event: EventContent = {
   descriptor: 'AI × Blockchain 해커톤',
   valueProposition: 'Where AI Gains Memory, Agency, and Ownership.',
   date: '2026.08.29 – 09.19',
-  applicationPeriod: '', // 마감(09.14)만 확정. 시작일이 정해지면 채웁니다
+  applicationPeriod: '', // 신청 접수 기간. 09.14는 프로젝트 제출 마감이지 신청 마감이 아닙니다
   location: 'ONLINE + SEOUL',
   format: 'ONLINE PRELIMINARY + DEMO DAY',
   applyUrl:
@@ -392,7 +392,7 @@ export const event: EventContent = {
   // --- 11 Final CTA --------------------------------------------------------
   finalCta: {
     message: 'AI와 블록체인의\n새로운 가능성에 도전하세요',
-    body: '개인 또는 최대 4인 팀으로 참가할 수 있습니다. 블록체인 경험이 많지 않아도 괜찮습니다. 참가 신청은 9월 14일에 마감됩니다.',
+    body: '개인 또는 최대 4인 팀으로 참가할 수 있습니다. 블록체인 경험이 많지 않아도 괜찮습니다. 온라인 예선 프로젝트 제출은 9월 14일에 마감됩니다.',
     label: 'Blockthon 2026 참가 신청',
     url: '', // 비우면 위 applyUrl 사용
     contact: '', // 비우면 위 contact 사용
