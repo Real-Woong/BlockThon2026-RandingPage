@@ -211,6 +211,17 @@ export const event: EventContent = {
           },
         ],
       },
+      {
+        title: 'Sui Dev Korea',
+        summary: '한국 Sui 개발자 커뮤니티.',
+        links: [
+          {
+            label: 'GitHub',
+            url: 'https://github.com/Sui-Dev-Korea',
+            note: 'Sui·Walrus·Seal 저장소 모음',
+          },
+        ],
+      },
     ],
   },
 
