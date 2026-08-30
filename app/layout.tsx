@@ -10,13 +10,25 @@ const meta = content.metadata;
  * date, location or Event structured data is emitted until those are confirmed
  * (CONTENT.md §15).
  */
+/**
+ * A crawler reads og:image out of context and has nothing to resolve a path
+ * against, so the URL has to be absolute. Next builds one from metadataBase,
+ * which falls back to localhost during a build — an og:image pointing at
+ * localhost is worse than none, because the card renders broken instead of
+ * falling back to text. So the image ships with the site but is only announced
+ * once the deployed origin is known, which is the same rule the rest of the
+ * content follows: fill the value and it appears.
+ */
+const origin = meta.canonicalUrl ? new URL(meta.canonicalUrl) : undefined;
+
 export const metadata: Metadata = {
+  metadataBase: origin,
   title: meta.title || `${brand.creativeName} — ${brand.organizer}`,
   description: meta.description || undefined,
   openGraph: {
     title: meta.title || `${brand.creativeName} — ${brand.organizer}`,
     description: meta.description || undefined,
-    images: meta.ogImage ? [meta.ogImage] : undefined,
+    images: origin && meta.ogImage ? [meta.ogImage] : undefined,
     locale: meta.locale || 'ko_KR',
     type: 'website',
   },
