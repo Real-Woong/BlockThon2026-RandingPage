@@ -42,19 +42,6 @@ export type Criterion = {
   weight: string;
 };
 
-export type ProofMetric = {
-  /** Digits — `180` counts up. Anything else renders unanimated. */
-  value: string;
-  label: string;
-  /** Where the figure comes from. Never publish a metric without one. */
-  source: string;
-};
-
-export type ProofImage = {
-  src: string;
-  alt: string;
-};
-
 export type Partner = {
   name: string;
   /** With a logo the name is used as the alt text fallback. */
@@ -135,13 +122,6 @@ export type SupportContent = {
   followUpBenefits: string[];
 };
 
-export type ProofContent = {
-  intro: string;
-  metrics: ProofMetric[];
-  achievements: string[];
-  gallery: ProofImage[];
-};
-
 export type PartnersContent = {
   hosts: Partner[];
   mainPartners: Partner[];
@@ -191,7 +171,6 @@ export type EventContent = {
   tracks: Track[];
   support: SupportContent;
   criteria: Criterion[];
-  proof: ProofContent;
   partners: PartnersContent;
   faqs: Faq[];
   finalCta: FinalCtaContent;

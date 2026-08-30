@@ -10,7 +10,6 @@ import { BuildPathSection } from '@/components/sections/BuildPathSection';
 import { TracksSection } from '@/components/sections/TracksSection';
 import { SupportSection } from '@/components/sections/SupportSection';
 import { CriteriaSection } from '@/components/sections/CriteriaSection';
-import { ProofSection } from '@/components/sections/ProofSection';
 import { PartnersSection } from '@/components/sections/PartnersSection';
 import { FAQSection } from '@/components/sections/FAQSection';
 import { FinalCTASection } from '@/components/sections/FinalCTASection';
@@ -35,7 +34,6 @@ export default function Page() {
         <TracksSection />
         <SupportSection />
         <CriteriaSection />
-        <ProofSection />
         <PartnersSection />
         <FAQSection />
         <FinalCTASection />

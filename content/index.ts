@@ -101,13 +101,6 @@ function normalise(source: EventContent): EventContent {
 
     criteria: source.criteria.map(strings).filter((entry) => entry.title),
 
-    proof: {
-      intro: clean(source.proof.intro),
-      metrics: source.proof.metrics.map(strings).filter((metric) => metric.value),
-      achievements: source.proof.achievements.map(clean).filter(Boolean),
-      gallery: source.proof.gallery.map(strings).filter((image) => image.src),
-    },
-
     partners: {
       hosts: partners(source.partners.hosts),
       mainPartners: partners(source.partners.mainPartners),

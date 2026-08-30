@@ -16,7 +16,6 @@ const {
   resources,
   program,
   support,
-  proof,
   partners,
   faqs,
   finalCta,
@@ -36,7 +35,6 @@ export const sectionVisibility = {
   tracks: tracks.length > 0,
   support: Boolean(support.totalPrize || support.items.length || support.followUpBenefits.length),
   criteria: criteria.length > 0,
-  proof: Boolean(proof.metrics.length || proof.achievements.length || proof.gallery.length),
   partners: Boolean(
     partners.hosts.length ||
       partners.mainPartners.length ||
@@ -63,7 +61,6 @@ const SECTION_ORDER: { key: SectionKey; id: string }[] = [
   { key: 'tracks', id: 'tracks' },
   { key: 'support', id: 'support' },
   { key: 'criteria', id: 'criteria' },
-  { key: 'proof', id: 'proof' },
   { key: 'partners', id: 'partners' },
   { key: 'faq', id: 'faq' },
   { key: 'finalCta', id: 'apply' },

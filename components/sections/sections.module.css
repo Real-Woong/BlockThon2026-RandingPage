@@ -879,125 +879,7 @@
 }
 
 
-/* --- 08 Proof ----------------------------------------------------------- */
-
-.proof {
-  display: grid;
-  gap: clamp(2.5rem, 5vw, 4rem);
-}
-
-.proofHead {
-  display: grid;
-  gap: 1rem;
-}
-
-.proofTitle {
-  font-size: var(--heading);
-  font-weight: var(--w-display);
-  letter-spacing: -0.04em;
-}
-
-.proofIntro {
-  font-size: var(--body-l);
-  font-weight: var(--w-quiet);
-  line-height: 1.65;
-  color: var(--muted);
-}
-
-.metrics {
-  display: grid;
-  border-block: 1px solid var(--hairline);
-}
-
-.metric {
-  display: grid;
-  gap: 0.35rem;
-  padding: clamp(1.25rem, 2.5vw, 2rem) 0;
-}
-
-.metricValue {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
-  font-weight: var(--w-display);
-  line-height: 0.9;
-  letter-spacing: -0.05em;
-}
-
-.metricLabel {
-  font-size: var(--body);
-  color: var(--text);
-}
-
-.metricSource {
-  font-family: var(--font-mono);
-  font-size: var(--meta-s);
-  letter-spacing: 0.1em;
-  color: var(--muted);
-}
-
-.achievements {
-  display: grid;
-  gap: 0.75rem;
-}
-
-.achievement {
-  position: relative;
-  padding-left: 1.5rem;
-  font-size: var(--body-l);
-  line-height: 1.5;
-}
-
-.achievement::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0.65em;
-  width: 7px;
-  height: 7px;
-  background: var(--electric-blue);
-}
-
-.gallery {
-  display: grid;
-  gap: 1px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.galleryItem img {
-  width: 100%;
-  height: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-}
-
-@media (min-width: 768px) {
-  .proofHead {
-    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    align-items: end;
-    gap: clamp(2rem, 5vw, 5rem);
-  }
-
-  .metrics {
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  }
-
-  .metric {
-    padding-inline: clamp(1rem, 2vw, 2rem);
-    border-left: 1px solid var(--hairline);
-  }
-
-  .metric:first-child {
-    padding-left: 0;
-    border-left: 0;
-  }
-
-  .gallery {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-/* --- 09 Partners -------------------------------------------------------- */
+/* --- 08 Partners -------------------------------------------------------- */
 
 .partners {
   display: grid;
@@ -1017,7 +899,7 @@
   display: grid;
 }
 
-/* --- 10 FAQ ------------------------------------------------------------- */
+/* --- 09 FAQ ------------------------------------------------------------- */
 
 .faq {
   display: grid;
@@ -1038,7 +920,7 @@
   }
 }
 
-/* --- 11 Final CTA ------------------------------------------------------- */
+/* --- 10 Final CTA ------------------------------------------------------- */
 
 .final {
   display: grid;

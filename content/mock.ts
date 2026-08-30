@@ -182,20 +182,6 @@ export const mock: EventContent = {
     },
   ],
 
-  proof: {
-    intro: '지난 회차에서 남은 것들입니다.',
-    metrics: [
-      { value: '180', label: '참가자', source: '2025 회차 집계' },
-      { value: '42', label: '제출 프로젝트', source: '2025 회차 집계' },
-      { value: '11', label: '행사 후 개발 지속', source: '3개월 후 추적' },
-    ],
-    achievements: [
-      '상위 3팀 중 2팀이 생태계 그랜트를 받았습니다',
-      '제출작 전량이 공개 저장소로 남아 있습니다',
-    ],
-    gallery: [],
-  },
-
   partners: {
     hosts: [{ name: 'blockblock', logoUrl: '', websiteUrl: '', alt: '' }],
     mainPartners: [

@@ -20,15 +20,13 @@ import type { EventContent } from './types';
  *   05 tracks     1개 이상
  *   06 support    totalPrize / items / followUpBenefits 중 하나
  *   07 criteria   1개 이상
- *   08 proof      metrics / achievements / gallery 중 하나
- *   09 partners   네 그룹 중 하나라도
- *   10 faqs       1개 이상
- *   11 finalCta   message / body, 또는 label+url 둘 다
+ *   08 partners   네 그룹 중 하나라도
+ *   09 faqs       1개 이상
+ *   10 finalCta   message / body, 또는 label+url 둘 다
  *
  * 형식이 중요한 값 (틀려도 안 깨지고, 효과만 빠집니다)
  *   criteria[].weight      `40%`         → 가중치 막대가 그려짐
  *   support.totalPrize     `30,000,000`  → 숫자가 세어 올라감
- *   proof.metrics[].value  `180`         → 숫자가 세어 올라감
  *   about.statement / finalCta.message / hero.headline
  *                          `\n` 으로 2줄  → 첫 줄 굵게, 둘째 줄 얇은 회색
  *
@@ -39,7 +37,6 @@ import type { EventContent } from './types';
  * ⚠️ 아직 비어 있는 값 — 확정되면 여기만 채우면 됩니다
  *   applyUrl   신청 폼 URL. 비어 있는 동안 헤더·히어로·최종 CTA의
  *              신청 버튼이 전부 화면에서 빠집니다.
- *   proof      지난 회차 집계값. 없으면 08 섹션 전체가 숨겨집니다.
  */
 export const event: EventContent = {
   // --- 기본 정보 -----------------------------------------------------------
@@ -60,7 +57,7 @@ export const event: EventContent = {
   // --- 헤더 메뉴 -----------------------------------------------------------
   // href는 섹션 앵커입니다. 숨겨진 섹션을 가리키는 링크는 자동으로 빠집니다.
   // 쓸 수 있는 값: #top #about #stack #resources #program #tracks #support
-  //                #criteria #proof #partners #faq #apply
+  //                #criteria #partners #faq #apply
   navigation: [
     { label: 'ABOUT', href: '#about' },
     { label: 'STACK', href: '#stack' },
@@ -329,17 +326,7 @@ export const event: EventContent = {
     },
   ],
 
-  // --- 08 Proof ------------------------------------------------------------
-  // ⚠️ 지난 회차의 실제 집계값만. 추정치나 반올림한 홍보 숫자를 넣지 마세요.
-  //    지금은 비어 있으므로 08 섹션이 렌더링되지 않습니다.
-  proof: {
-    intro: '',
-    metrics: [],
-    achievements: [],
-    gallery: [],
-  },
-
-  // --- 09 Partners ---------------------------------------------------------
+  // --- 08 Partners ---------------------------------------------------------
   // ⚠️ 로고 사용 허가를 받은 곳만. 논의 중인 곳은 넣지 마세요.
   //    logoUrl을 비우면 이름이 텍스트로 표시됩니다.
   partners: {
@@ -359,7 +346,7 @@ export const event: EventContent = {
     communityPartners: [{ name: '4 Pillars', logoUrl: '', websiteUrl: '', alt: '' }],
   },
 
-  // --- 10 FAQ --------------------------------------------------------------
+  // --- 09 FAQ --------------------------------------------------------------
   // 첫 항목이 기본으로 펼쳐집니다. 가장 많이 물어볼 걸 맨 위에.
   faqs: [
     {
@@ -389,7 +376,7 @@ export const event: EventContent = {
     },
   ],
 
-  // --- 11 Final CTA --------------------------------------------------------
+  // --- 10 Final CTA --------------------------------------------------------
   finalCta: {
     message: 'AI와 블록체인의\n새로운 가능성에 도전하세요',
     body: '개인 또는 최대 4인 팀으로 참가할 수 있습니다. 블록체인 경험이 많지 않아도 괜찮습니다. 온라인 예선 프로젝트 제출은 9월 14일에 마감됩니다.',
