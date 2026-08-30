@@ -332,12 +332,10 @@ export const event: EventContent = {
     hosts: [
       { name: 'blockblock', logoUrl: '/blockblock-logo.png', websiteUrl: '', alt: 'blockblock' },
     ],
-    // 공식 로고입니다. Sui는 sui.io의 화이트 SVG를 그대로 썼고, Walrus는 공식
-    // 워드마크(walrus.xyz)를 색만 반전한 화이트 버전입니다 — 어두운 배경용
-    // 단색 반전 사용으로, 형태는 원본 그대로입니다.
+    // 로고 사용 허가를 받기 전까지는 이름만 텍스트로 표시합니다.
     mainPartners: [
-      { name: 'Sui', logoUrl: '/partners/sui.svg', websiteUrl: '', alt: 'Sui' },
-      { name: 'Walrus', logoUrl: '/partners/walrus.png', websiteUrl: '', alt: 'Walrus' },
+      { name: 'Sui', logoUrl: '', websiteUrl: '', alt: 'Sui' },
+      { name: 'Walrus', logoUrl: '', websiteUrl: '', alt: 'Walrus' },
     ],
     // Academy Partner는 아직 확정되지 않아 비워 둡니다.
     techPartners: [],
