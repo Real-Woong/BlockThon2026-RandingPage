@@ -404,11 +404,11 @@ export const event: EventContent = {
     description:
       'Sui와 Walrus를 활용해 AI × Blockchain 프로젝트를 만드는 해커톤. 2026년 8월 29일 온라인 예선을 시작해 9월 19일 서울에서 오프라인 해커톤과 Demo Day로 마무리합니다.',
     // public/og.png — 1200×630. 공유 카드에 쓰입니다.
-    // ⚠️ canonicalUrl이 비어 있는 동안에는 og:image 태그가 나가지 않습니다.
-    //    크롤러는 절대 URL만 읽을 수 있는데, 도메인을 모르면 만들 수 없어서입니다.
-    //    아래 canonicalUrl에 배포 주소를 넣는 순간 둘 다 켜집니다.
+    // canonicalUrl과 짝입니다. canonicalUrl을 비우면 크롤러가 읽을 절대 URL을
+    // 만들 수 없어서 og:image 태그 자체가 나가지 않습니다.
     ogImage: '/og.png',
-    canonicalUrl: '', // 예: https://blockthon2026.example.com
+    // 현재 배포 주소입니다. 정식 도메인이 생기면 이 한 줄만 바꾸면 됩니다.
+    canonicalUrl: 'https://blockthon2026-randingpage.jinung344.workers.dev',
     locale: 'ko_KR',
   },
 };
