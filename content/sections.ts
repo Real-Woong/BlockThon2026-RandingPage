@@ -49,26 +49,38 @@ export const sectionVisibility = {
 
 export type SectionKey = keyof typeof sectionVisibility;
 
-const SECTION_ORDER: { key: SectionKey; id: string; index: string }[] = [
-  { key: 'hero', id: 'top', index: '00' },
-  { key: 'manifesto', id: 'about', index: '01' },
-  { key: 'stack', id: 'stack', index: '02' },
-  { key: 'resources', id: 'resources', index: '03' },
-  { key: 'program', id: 'program', index: '04' },
-  { key: 'tracks', id: 'tracks', index: '05' },
-  { key: 'support', id: 'support', index: '06' },
-  { key: 'criteria', id: 'criteria', index: '07' },
-  { key: 'proof', id: 'proof', index: '08' },
-  { key: 'partners', id: 'partners', index: '09' },
-  { key: 'faq', id: 'faq', index: '10' },
-  { key: 'finalCta', id: 'apply', index: '11' },
+/**
+ * Document order. Numbers are not written here on purpose: a hidden section
+ * would reserve one and leave a hole in the sequence — a reader who sees 07
+ * followed by 09 looks for a section that was never published.
+ */
+const SECTION_ORDER: { key: SectionKey; id: string }[] = [
+  { key: 'hero', id: 'top' },
+  { key: 'manifesto', id: 'about' },
+  { key: 'stack', id: 'stack' },
+  { key: 'resources', id: 'resources' },
+  { key: 'program', id: 'program' },
+  { key: 'tracks', id: 'tracks' },
+  { key: 'support', id: 'support' },
+  { key: 'criteria', id: 'criteria' },
+  { key: 'proof', id: 'proof' },
+  { key: 'partners', id: 'partners' },
+  { key: 'faq', id: 'faq' },
+  { key: 'finalCta', id: 'apply' },
 ];
 
-export const visibleSections = SECTION_ORDER.filter((section) => sectionVisibility[section.key]);
+/**
+ * The sections that rendered, numbered by where they land in the finished
+ * document. Numbering after the filter is what keeps the sequence unbroken as
+ * content is filled in or emptied out.
+ */
+export const visibleSections = SECTION_ORDER.filter(
+  (section) => sectionVisibility[section.key],
+).map((section, position) => ({ ...section, index: String(position).padStart(2, '0') }));
 
 /** Index label for a section, so numbering follows the document, not the array. */
 export function sectionIndex(key: SectionKey): string {
-  return SECTION_ORDER.find((section) => section.key === key)?.index ?? '';
+  return visibleSections.find((section) => section.key === key)?.index ?? '';
 }
 
 export function sectionId(key: SectionKey): string {
