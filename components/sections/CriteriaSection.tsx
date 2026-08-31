@@ -46,7 +46,7 @@ export function CriteriaSection() {
                 <div className={styles.criterionBody}>
                   <h3 className={`${styles.criterionTitle} u-kr`}>{criterion.title}</h3>
                   {criterion.description && (
-                    <p className={`${styles.criterionText} u-kr`}>{criterion.description}</p>
+                    <p className={`${styles.criterionText} ${styles.handLines} u-kr`}>{criterion.description}</p>
                   )}
                 </div>
                 {criterion.weight && (

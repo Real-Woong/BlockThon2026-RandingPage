@@ -30,14 +30,14 @@ export function ManifestoSection() {
           </h2>
         )}
 
-        {body && <p className={`${styles.manifestoBody} u-kr`}>{body}</p>}
+        {body && <p className={`${styles.manifestoBody} ${styles.handLines} u-kr`}>{body}</p>}
 
         {principles.length > 0 && (
           <ol className={styles.principles}>
             {principles.map((principle, position) => (
               <li key={position} className={styles.principle}>
                 <span className={styles.principleIndex}>{ordinal(position)}</span>
-                <span className="u-kr">{principle}</span>
+                <span className={`${styles.handLines} u-kr`}>{principle}</span>
               </li>
             ))}
           </ol>

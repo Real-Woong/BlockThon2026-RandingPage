@@ -26,7 +26,7 @@ export function BuildPathSection() {
       <div className={styles.program}>
         <header className={styles.programHead}>
           <h2 className={styles.programTitle}>PROGRAM TIMELINE</h2>
-          {intro && <p className={`${styles.programIntro} u-kr u-measure`}>{intro}</p>}
+          {intro && <p className={`${styles.programIntro} ${styles.handLines} u-kr u-measure`}>{intro}</p>}
         </header>
 
         <ol className={styles.timeline} style={{ '--phase-count': phases.length } as React.CSSProperties}>
@@ -39,7 +39,9 @@ export function BuildPathSection() {
               {phase.label && <span className={styles.phaseLabel}>{phase.label}</span>}
               {phase.date && <span className={styles.phaseDate}>{phase.date}</span>}
               {phase.title && <h3 className={`${styles.phaseTitle} u-kr`}>{phase.title}</h3>}
-              {phase.description && <p className={`${styles.phaseBody} u-kr`}>{phase.description}</p>}
+              {phase.description && (
+                <p className={`${styles.phaseBody} ${styles.handLines} u-kr`}>{phase.description}</p>
+              )}
             </li>
           ))}
         </ol>

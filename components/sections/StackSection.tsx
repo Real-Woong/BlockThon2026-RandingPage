@@ -27,7 +27,7 @@ export function StackSection() {
       <div className={styles.stack}>
         <header className={styles.stackHead}>
           <h2 className={styles.stackTitle}>Build with Sui &amp; Walrus</h2>
-          {intro && <p className={`${styles.stackIntro} u-kr`}>{intro}</p>}
+          {intro && <p className={`${styles.stackIntro} ${styles.handLines} u-kr`}>{intro}</p>}
         </header>
 
         {(suiRole || walrusRole || output) && (
@@ -36,13 +36,13 @@ export function StackSection() {
               {suiRole && (
                 <article className={styles.layer} data-layer="sui">
                   <span className={styles.layerKey}>{protocolLabels.sui.text}</span>
-                  <p className={`${styles.layerRole} u-kr`}>{suiRole}</p>
+                  <p className={`${styles.layerRole} ${styles.handLines} u-kr`}>{suiRole}</p>
                 </article>
               )}
               {walrusRole && (
                 <article className={styles.layer} data-layer="walrus">
                   <span className={styles.layerKey}>{protocolLabels.walrus.text}</span>
-                  <p className={`${styles.layerRole} u-kr`}>{walrusRole}</p>
+                  <p className={`${styles.layerRole} ${styles.handLines} u-kr`}>{walrusRole}</p>
                 </article>
               )}
             </div>
@@ -50,7 +50,7 @@ export function StackSection() {
             {output && (
               <div className={styles.output}>
                 <span className={styles.outputKey}>what you can build</span>
-                <p className={`${styles.outputValue} u-kr`}>{output}</p>
+                <p className={`${styles.outputValue} ${styles.handLines} u-kr`}>{output}</p>
               </div>
             )}
           </div>

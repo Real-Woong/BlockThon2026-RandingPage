@@ -31,7 +31,7 @@ export function ResourcesSection() {
       <div className={styles.resources}>
         <header className={styles.resourcesHead}>
           <h2 className={styles.resourcesTitle}>developer resources</h2>
-          {intro && <p className={`${styles.resourcesIntro} u-kr`}>{intro}</p>}
+          {intro && <p className={`${styles.resourcesIntro} ${styles.handLines} u-kr`}>{intro}</p>}
         </header>
 
         <div className={styles.resourceGroups}>

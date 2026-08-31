@@ -65,7 +65,7 @@ export function TracksSection() {
               className={styles.trackPanel}
             >
               {current.summary && (
-                <p className={`${styles.trackSummary} u-kr`}>{current.summary}</p>
+                <p className={`${styles.trackSummary} ${styles.handLines} u-kr`}>{current.summary}</p>
               )}
               {current.description && (
                 <p className={`${styles.trackBody} u-kr u-measure`}>{current.description}</p>
