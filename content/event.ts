@@ -229,7 +229,7 @@ export const event: EventContent = {
       },
       {
         title: 'Sui Dev Korea',
-        summary: '한국 Sui 개발자 커뮤니티.',
+        summary: '수이 개발자를 위한 대표 자료 모음.',
         links: [
           {
             label: 'GitHub',
