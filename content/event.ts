@@ -366,8 +366,14 @@ export const event: EventContent = {
     ],
     // Academy Partner는 아직 확정되지 않아 비워 둡니다.
     techPartners: [],
-    // Media Partner 그룹입니다 (PartnersSection에서 `media`로 표기).
-    communityPartners: [{ name: '4 Pillars', logoUrl: '', websiteUrl: '', alt: '' }],
+    // Supporting Partner 그룹입니다 (PartnersSection에서 `supporting partners`로 표기).
+    // 세 곳 모두 원본 로고를 어두운 배경용 화이트 단색으로 반전했습니다 —
+    // 색만 바꿨고 형태는 원본 그대로입니다. 원본은 image_source/에 있습니다.
+    communityPartners: [
+      { name: '한국블록체인산업진흥협회', logoUrl: '/partners/kbipa.png', websiteUrl: '', alt: 'KBIPA 한국블록체인산업진흥협회' },
+      { name: 'DSRV', logoUrl: '/partners/dsrv.svg', websiteUrl: '', alt: 'DSRV' },
+      { name: '4 Pillars', logoUrl: '/partners/4pillars.svg', websiteUrl: '', alt: 'Four Pillars' },
+    ],
   },
 
   // --- 09 FAQ --------------------------------------------------------------

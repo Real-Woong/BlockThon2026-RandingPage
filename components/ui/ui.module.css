@@ -284,8 +284,16 @@
   color: var(--text);
 }
 
+/*
+ * Both axes are capped. 40px of height sets the scale for marks between 2:1
+ * and 4:1, which is every logo here but one; a much wider wordmark (Four
+ * Pillars is roughly 10:1) would run past its cell at that height, so width
+ * takes over and the row stays optically even instead of letting one lockup
+ * dominate.
+ */
 .logoCell img {
   max-height: 40px;
+  max-width: min(100%, 220px);
   width: auto;
   object-fit: contain;
 }

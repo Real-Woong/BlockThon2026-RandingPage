@@ -19,7 +19,7 @@ export function PartnersSection() {
     { title: 'host', partners: hosts, tier: 'lead' as const },
     { title: 'main sponsor', partners: mainPartners, tier: 'lead' as const },
     { title: 'tech', partners: techPartners, tier: 'support' as const },
-    { title: 'media', partners: communityPartners, tier: 'support' as const },
+    { title: 'supporting partners', partners: communityPartners, tier: 'support' as const },
   ].filter((group) => group.partners.length > 0);
 
   return (

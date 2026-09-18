@@ -227,7 +227,7 @@ techPartners (기술):
     logoUrl:
     websiteUrl:
 
-communityPartners (커뮤니티):
+communityPartners (서포팅 — 화면 표기 supporting partners):
   - name:
     logoUrl:
     websiteUrl:
